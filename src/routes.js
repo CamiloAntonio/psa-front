@@ -12,7 +12,7 @@ import Recursos from "views/ComponentesSquads/Recursos";
 
 var routes = [
   {
-    path: "/dashboard",
+    path: "/proyecto",
     name: "Proyecto",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
@@ -20,7 +20,7 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/icons",
+    path: "/recursos",
     name: "Recursos",
     rtlName: "الرموز",
     icon: "tim-icons icon-atom",
@@ -28,7 +28,7 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/map",
+    path: "/soporte",
     name: "Soporte",
     rtlName: "خرائط",
     icon: "tim-icons icon-pin",
