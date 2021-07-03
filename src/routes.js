@@ -7,7 +7,7 @@ import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import ToDo from  "views/ToDo.js"
-import Soporte from "views/ComponentesSquads/Soporte.js"
+import Soporte from "views/ComponentesSquads/soporte/Soporte.js"
 import Recursos from "views/ComponentesSquads/Recursos";
 
 var routes = [
