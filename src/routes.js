@@ -8,7 +8,9 @@ import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import ToDo from  "views/ToDo.js"
 import Soporte from "views/ComponentesSquads/soporte/Soporte.js"
+import CreacionTicket from "views/ComponentesSquads/soporte/CreacionTicket.js"
 import Recursos from "views/ComponentesSquads/Recursos";
+
 
 var routes = [
   {
@@ -35,6 +37,15 @@ var routes = [
     component: Soporte,
     layout: "/admin",
     // redirect: true
+  },
+  {
+    path: "/creacion_ticket",
+    name: "Creacion de Tickets",
+    rtlName: "",
+    icon: "",
+    component: CreacionTicket,
+    layout: "/admin",
+    redirect: true
   },
   // {
   //   path: "/notifications",
