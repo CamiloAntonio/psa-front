@@ -12,9 +12,10 @@ import {
 
 const FormularioCreacion = () => {
 
-    const severidades = [{nombre:"Alta"},
-        {nombre:"Media"},
-        {nombre:"Baja"}]
+    const severidades = [{nombre:"S1 (7 dias para resolver)"},
+        {nombre:"S2 (30 dias para resolver)"},
+        {nombre:"S3 (90 dias para resolver)"},
+        {nombre:"S4 (365 dias para resolver)"}]
 
     const clientes = [{nombre:"Cliente1"},
         {nombre:"Cliente2"},
