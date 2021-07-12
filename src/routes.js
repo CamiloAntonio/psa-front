@@ -61,8 +61,8 @@ var routes = [
   {
     path: "/tickets",
     name: "Tickets",
+    icon: "tim-icons icon-paper",
     rtlName: "خرائط",
-    icon: "tim-icons icon-pin",
     component: Tickets,
     layout: "/admin",
     //redirect: true
