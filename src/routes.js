@@ -1,15 +1,16 @@
 import Dashboard from "views/Dashboard.js";
-import Icons from "views/Icons.js";
+/*import Icons from "views/Icons.js";
 import Map from "views/Map.js";
 import Notifications from "views/Notifications.js";
 import Rtl from "views/Rtl.js";
 import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
-import ToDo from  "views/ToDo.js"
+import ToDo from  "views/ToDo.js"*/
 import Soporte from "views/ComponentesSquads/soporte/Soporte.js"
 import CreacionTicket from "views/ComponentesSquads/soporte/CreacionTicket.js"
 import Recursos from "views/ComponentesSquads/Recursos";
+import Tickets from "views/ComponentesSquads/soporte/Tickets";
 
 
 var routes = [
@@ -30,22 +31,31 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/soporte",
-    name: "Soporte",
-    rtlName: "خرائط",
-    icon: "tim-icons icon-pin",
-    component: Soporte,
-    layout: "/admin",
-    // redirect: true
-  },
-  {
-    path: "/creacion_ticket",
+    path: "/soporte/creacion_ticket",
     name: "Creacion de Tickets",
     rtlName: "",
     icon: "",
     component: CreacionTicket,
     layout: "/admin",
     redirect: true
+  },
+  {
+    path: "/soporte",
+    name: "Soporte",
+    rtlName: "خرائط",
+    icon: "tim-icons icon-pin",
+    component: Soporte,
+    layout: "/admin",
+    //redirect: true
+  },
+  {
+    path: "/tickets",
+    name: "Tickets",
+    rtlName: "خرائط",
+    icon: "tim-icons icon-pin",
+    component: Tickets,
+    layout: "/admin",
+    //redirect: true
   },
   // {
   //   path: "/notifications",
