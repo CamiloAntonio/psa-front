@@ -9,8 +9,10 @@ import UserProfile from "views/UserProfile.js";
 import ToDo from  "views/ToDo.js"*/
 import Soporte from "views/ComponentesSquads/soporte/Soporte.js"
 import CreacionTicket from "views/ComponentesSquads/soporte/CreacionTicket.js"
-import Recursos from "views/ComponentesSquads/Recursos";
+//import Recursos from "views/ComponentesSquads/Recursos";
 import Tickets from "views/ComponentesSquads/soporte/Tickets";
+import Recursos from "views/ComponentesSquads/Recursos"
+import Horas from "views/ComponentesSquads/Horas";
 
 
 var routes = [
@@ -38,6 +40,14 @@ var routes = [
     component: CreacionTicket,
     layout: "/admin",
     redirect: true
+  },
+  {
+    path: "/horas",
+    name: "Carga de Horas",
+    rtlName: "ساعات التحميل",
+    icon: "tim-icons icon-time-alarm",
+    component: Horas,
+    layout: "/admin",
   },
   {
     path: "/soporte",

@@ -23,6 +23,8 @@ export default function Tickets() {
                 </Button>
             </form>
 
+            <hr color="#4c4c4c"></hr>
+
             {<Card style={{width: '20rem'}}>
 
                 <CardBody>
