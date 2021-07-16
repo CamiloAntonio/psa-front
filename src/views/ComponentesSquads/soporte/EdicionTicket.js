@@ -10,7 +10,7 @@ import {
     CardBody
 } from "reactstrap";
 
-const FormularioCreacion = () => {
+const FormularioEdicion = () => {
 
     const severidades = [{nombre:"S1 (7 dias para resolver)"},
         {nombre:"S2 (30 dias para resolver)"},
@@ -24,6 +24,11 @@ const FormularioCreacion = () => {
     const agentes = [{nombre:"Agente1"},
         {nombre:"Agente2"},
         {nombre:"Agente3"}]
+
+    const estados = [{nombre:"Nuevo"},
+        {nombre:"En Progreso"},
+        {nombre:"Terminado"},
+        {nombre:"Bloqueado"}]
 
 
     return (
@@ -68,6 +73,15 @@ const FormularioCreacion = () => {
                         </Input>
                     </FormGroup>
                     <FormGroup>
+                        <Label for="estado">Estado *</Label>
+                        <Input type="select" name="selectEstado" id="estado">
+                            <option value="" selected disabled hidden>Seleccione el estado del ticket</option>
+                            {estados.map((estado) =>
+                                <option>{estado.nombre}</option>
+                            )}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
                         <Label for="descripcion">Descripción *</Label>
                         <Input
                             type="textarea"
@@ -88,18 +102,17 @@ const FormularioCreacion = () => {
     );
 };
 
-export default function CreacionTicket() {
+export default function EdicionTicket() {
 
     const producto = {nombre:'Producto1',version:'1.2.3'}
+    const tkt = {nro:100}
 
     return (
          <div className="content">
-             <h1>Creacion de ticket - {producto.nombre} - version: {producto.version}</h1>
+             <h1>Edicion Ticket #{tkt.nro} - {producto.nombre} - version: {producto.version}</h1>
 
-             {FormularioCreacion()}
+             {FormularioEdicion()}
 
          </div>
     )
 }
-
-

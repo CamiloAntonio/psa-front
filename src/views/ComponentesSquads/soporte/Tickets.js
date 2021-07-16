@@ -18,7 +18,7 @@ export default function Tickets() {
                     id="exampleEmail"
                     />
                 </FormGroup>
-                <Button color="success" size="sm"type="submit">
+                <Button color="info" size="sm" type="submit">
                     Buscar
                 </Button>
             </form>
@@ -30,15 +30,26 @@ export default function Tickets() {
                 <CardBody>
                     <CardTitle><h3>Estado: Asignado</h3></CardTitle>
                     <CardText>
+                    <h4>Ticket nro: 123</h4>
                         <ul>
                             <li><h6>Titulo:</h6> Falla al clickear boton de aceptar</li>
                             <li><h6>Agente:</h6> Franco Mariotti</li>
                             <li><h6>Vencimiento:</h6> 24/04/2021</li>
                         </ul>
                     </CardText>
-                    <Button color="primary" size="sm">Crear Tarea</Button>
+
+                    <div className="text-right">
+                        <Button color="primary" size="sm">Editar</Button>
+                        <Button color="primary" size="sm">Crear Tarea</Button>
+                    </div>
+
                 </CardBody>
             </Card>}
+            <div className="text-right">
+                <Button color="primary" type="submit">
+                    Crear Ticket
+                </Button>
+            </div>
         </div>
     )
 }

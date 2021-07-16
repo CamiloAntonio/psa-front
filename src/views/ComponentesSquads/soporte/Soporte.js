@@ -3,14 +3,14 @@ import { Table,Button } from 'reactstrap';
 
 
 export default function Soporte() {
-    const proyectos = [{
-        nombre:"proyecto1",
+    const productos = [{
+        nombre:"producto1",
         version:"1.0.0"
     },{
-        nombre:"proyecto2",
+        nombre:"producto2",
         version:"1.2.0"
     },{
-        nombre:"proyecto3",
+        nombre:"producto3",
         version:"2.0.0"
     }];
     
@@ -28,10 +28,10 @@ export default function Soporte() {
                     </tr>
                 </thead>
                 <tbody>
-                    {proyectos.map((proyecto) => 
+                    {productos.map((producto) =>
                         <tr>
-                            <td>{proyecto.nombre}</td>
-                            <td>{proyecto.version}</td>     
+                            <td>{producto.nombre}</td>
+                            <td>{producto.version}</td>
                             <td className="text-right">
                                 <Button className="btn-info" color="info" size="sm">
                                     {/*<i className="fa fa-user"></i>*/}
