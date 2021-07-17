@@ -1,5 +1,6 @@
 import React from "react";
 
+
 import {
     FormGroup,
     Label,
@@ -9,6 +10,7 @@ import {
     Card,
     CardBody
 } from "reactstrap";
+import TicketService from "../../../services/soporte/TicketService";
 
 const FormularioEdicion = () => {
 
@@ -92,7 +94,7 @@ const FormularioEdicion = () => {
                         />
                     </FormGroup>
                     <div className="text-right">
-                        <Button color="primary" type="submit">
+                        <Button color="primary" type="submit" onClick={(e)=>TicketService.updateTicket()}>
                             Confirmar cambios
                         </Button>
                     </div>
