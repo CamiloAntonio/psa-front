@@ -21,7 +21,8 @@ const FormularioCreacion = () => {
         {nombre:"Cliente2"},
         {nombre:"CLiente3"}]
 
-    const agentes = [{nombre:"Agente1"},
+    const agentes = [{nombre:"Sin asignar"},
+        {nombre:"Agente1"},
         {nombre:"Agente2"},
         {nombre:"Agente3"}]
 
@@ -61,7 +62,6 @@ const FormularioCreacion = () => {
                     <FormGroup>
                         <Label for="agente">Agente</Label>
                         <Input type="select" name="selectAgente" id="agente">
-                            <option value="" selected disabled hidden>Seleccione el agente al cual asignar el ticket</option>
                             {agentes.map((agente) =>
                                 <option>{agente.nombre}</option>
                             )}
