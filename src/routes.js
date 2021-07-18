@@ -15,16 +15,10 @@ import Recursos from "views/ComponentesSquads/Recursos"
 import Horas from "views/ComponentesSquads/Horas";
 import EdicionTicket from "./views/ComponentesSquads/soporte/EdicionTicket";
 
+import Proyectos from "views/ComponentesSquads/proyectos/proyectos";
+import routesProyectos from "routesProyectos";
 
 var routes = [
-  {
-    path: "/proyecto",
-    name: "Proyecto",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard,
-    layout: "/admin",
-  },
   {
     path: "/recursos",
     name: "Recursos",
@@ -127,4 +121,7 @@ var routes = [
   //   layout: "/admin",
   // },
 ];
+
+routes = routes.concat(routesProyectos)
+
 export default routes;
