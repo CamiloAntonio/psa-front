@@ -10,7 +10,7 @@ import {
     Card,
     CardBody
 } from "reactstrap";
-import TicketService from "../../../services/soporte/TicketService";
+import TicketService from "../../../services/soporte/ticket.service";
 
 const FormularioEdicion = () => {
 

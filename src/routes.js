@@ -7,16 +7,12 @@ import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import ToDo from  "views/ToDo.js"
-import Soporte from "views/ComponentesSquads/soporte/Soporte.js"
-import CreacionTicket from "views/ComponentesSquads/soporte/CreacionTicket.js"
-//import Recursos from "views/ComponentesSquads/Recursos";
-import Tickets from "views/ComponentesSquads/soporte/Tickets";
+
 import Recursos from "views/ComponentesSquads/Recursos"
 import Horas from "views/ComponentesSquads/Horas";
-import EdicionTicket from "./views/ComponentesSquads/soporte/EdicionTicket";
-
 import Proyectos from "views/ComponentesSquads/proyectos/proyectos";
 import routesProyectos from "routesProyectos";
+import routesSoporte from "routesSoporte";
 
 var routes = [
   {
@@ -34,44 +30,7 @@ var routes = [
     icon: "tim-icons icon-time-alarm",
     component: Horas,
     layout: "/admin",
-  },
-  {
-    path: "/soporte/creacion_ticket",
-    name: "Creacion de Tickets",
-    rtlName: "",
-    icon: "",
-    component: CreacionTicket,
-    layout: "/admin",
-    redirect: true
-  },
-  {
-    path: "/soporte/edicion_ticket",
-    name: "Edicion de Tickets",
-    rtlName: "",
-    icon: "",
-    component: EdicionTicket,
-    layout: "/admin",
-    redirect: true
-  },
-  {
-    path: "/soporte",
-    name: "Soporte",
-    rtlName: "خرائط",
-    icon: "tim-icons icon-pin",
-    component: Soporte,
-    layout: "/admin",
-    // redirect: true
-  },
-  {
-    path: "/tickets",
-    name: "Tickets",
-    icon: "tim-icons icon-paper",
-    rtlName: "خرائط",
-    component: Tickets,
-    layout: "/admin",
-    //redirect: true
-  },
-
+  }
   // {
   //   path: "/notifications",
   //   name: "Alertas",
@@ -122,6 +81,6 @@ var routes = [
   // },
 ];
 
-routes = routes.concat(routesProyectos)
+routes = routes.concat(routesSoporte,routesProyectos)
 
 export default routes;

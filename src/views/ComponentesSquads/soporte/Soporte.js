@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table,Button } from 'reactstrap';
-import TicketService from "../../../services/soporte/TicketService";
+import TicketService from "../../../services/soporte/ticket.service";
 
 
 
