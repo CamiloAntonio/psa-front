@@ -1,8 +1,11 @@
-import { Card, CardBody, CardTitle, CardText, Button , FormGroup,
+import { Button , FormGroup,
     Label,
     Input,
     Table
     } from 'reactstrap';
+
+import { Link } from 'react-router-dom';
+
 
 export default function Tickets() {
    
@@ -10,7 +13,6 @@ export default function Tickets() {
     return (
         <div className="content">
             <h1>Tickets</h1>
-            <h3>Busqueda de Tickets</h3>
             <form>
                 <FormGroup>
                     <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
@@ -28,10 +30,12 @@ export default function Tickets() {
             <hr color="#4c4c4c"></hr>
         
             <div className="text-left">
-                <Button className="primary" color="primary" size="sm">
-                <i className="tim-icons icon-simple-add"/>{" "}
-                Ticket
-                </Button>
+                <Link to="./creacion_ticket">
+                    <Button className="primary" color="primary" size="sm">
+                    <i className="tim-icons icon-simple-add"/>{" "}
+                    Ticket
+                    </Button>
+                </Link>
             </div>
 
             <Table>

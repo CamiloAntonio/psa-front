@@ -78,7 +78,7 @@ const FormularioCreacion = () => {
                         />
                     </FormGroup>
                     <div className="text-right">
-                        <Button color="primary" type="submit">
+                        <Button color="primary" type="submit" size="md">
                             Crear
                         </Button>
                     </div>
