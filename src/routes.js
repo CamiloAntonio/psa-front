@@ -80,14 +80,14 @@ var routes = [
   //   component: Notifications,
   //   layout: "/admin",
   // },
-  // {
-  //   path: "/user-profile",
-  //   name: "Mensajeria",
-  //   rtlName: "ملف تعريفي للمستخدم",
-  //   icon: "tim-icons icon-single-02",
-  //   component: UserProfile,
-  //   layout: "/admin",
-  // },
+  {
+    path: "/user-profile",
+    name: "Mensajeria",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "tim-icons icon-single-02",
+    component: UserProfile,
+    layout: "/admin",
+  },
   // {
   //   path: "/tables",
   //   name: "Facturacion",
