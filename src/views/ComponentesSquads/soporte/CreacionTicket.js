@@ -10,6 +10,9 @@ import {
     CardBody
 } from "reactstrap";
 
+import { Link } from 'react-router-dom';
+
+
 const FormularioCreacion = () => {
 
     const severidades = [{nombre:"S1 (7 dias para resolver)"},
@@ -80,7 +83,12 @@ const FormularioCreacion = () => {
                     <div className="text-right">
                         <Button color="primary" type="submit" size="md">
                             Crear
-                        </Button>
+                        </Button> {' '}
+                        <Link to="./tickets">
+                            <Button color="btn-info"  size="md">
+                                Volver
+                            </Button>
+                        </Link>
                     </div>
                 </form>
             </CardBody>
