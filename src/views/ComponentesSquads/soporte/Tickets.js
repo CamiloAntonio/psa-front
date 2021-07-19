@@ -1,17 +1,19 @@
 import { Card, CardBody, CardTitle, CardText, Button , FormGroup,
     Label,
     Input,
-    FormText} from 'reactstrap';
+    Table
+    } from 'reactstrap';
 
 export default function Tickets() {
    
 
     return (
         <div className="content">
-            <h1>Buscar ticket</h1>
+            <h1>Tickets</h1>
+            <h3>Busqueda de Tickets</h3>
             <form>
                 <FormGroup>
-                    <Label for="exampleEmail">Nro Ticket</Label>
+                    <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
                     <Input
                     type="email"
                     name="email"
@@ -24,32 +26,43 @@ export default function Tickets() {
             </form>
 
             <hr color="#4c4c4c"></hr>
-
-            {<Card style={{width: '20rem'}}>
-
-                <CardBody>
-                    <CardTitle><h3>Estado: Asignado</h3></CardTitle>
-                    <CardText>
-                    <h4>Ticket nro: 123</h4>
-                        <ul>
-                            <li><h6>Titulo:</h6> Falla al clickear boton de aceptar</li>
-                            <li><h6>Agente:</h6> Franco Mariotti</li>
-                            <li><h6>Vencimiento:</h6> 24/04/2021</li>
-                        </ul>
-                    </CardText>
-
-                    <div className="text-right">
-                        <Button color="primary" size="sm">Editar</Button>
-                        <Button color="primary" size="sm">Crear Tarea</Button>
-                    </div>
-
-                </CardBody>
-            </Card>}
-            <div className="text-right">
-                <Button color="primary" type="submit">
-                    Crear Ticket
+        
+            <div className="text-left">
+                <Button className="primary" color="primary" size="sm">
+                <i className="tim-icons icon-simple-add"/>{" "}
+                Ticket
                 </Button>
             </div>
+
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Nro Ticket</th>
+                        <th>Titulo</th>
+                        <th>Estado</th>
+                        <th>Agente</th>
+                        <th>Vencimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>123</td>
+                        <td>Falla al clickear boton de aceptar</td>
+                        <td>Asignado</td>
+                        <td>Franco Mariotti</td>
+                        <td>24/04/2021</td>
+                        <td className="text-right">
+                            <Button className="primary" color="primary" size="sm">
+                                <i className="tim-icons icon-simple-add"/>{" "}
+                                Tarea
+                            </Button>{` `}
+                            <Button className="btn-icon" color="info" size="sm">
+                                <i className="fa fa-edit"></i>
+                            </Button>{` `}
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
         </div>
     )
 }
