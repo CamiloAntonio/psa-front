@@ -81,11 +81,11 @@ const FormularioCreacion = () => {
                         />
                     </FormGroup>
                     <div className="text-right">
-                        <Button color="primary" type="submit" size="md">
+                        <Button color="primary" type="submit" size="sm">
                             Crear
                         </Button> {' '}
                         <Link to="./tickets">
-                            <Button color="btn-info"  size="md">
+                            <Button color="info" size="sm">
                                 Volver
                             </Button>
                         </Link>

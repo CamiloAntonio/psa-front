@@ -4,9 +4,9 @@ const API_URL = "https://psa-suport-module.herokuapp.com/";
 
 class TicketService {
 
-    getTickets(){
+    getTickets(callback){
         return axios.get(API_URL + "tickets").
-        then (res => console.log(res))
+        then (res => {return callback(res.data)});
     }
 
     updateTicket(tkt){

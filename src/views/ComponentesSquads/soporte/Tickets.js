@@ -4,11 +4,48 @@ import { Button , FormGroup,
     Table
     } from 'reactstrap';
 
-import { Link } from 'react-router-dom';
+import React from "react";
 
+
+import { Link } from 'react-router-dom';
+import TicketService from "../../../services/soporte/ticket.service";
+
+
+function displayTicket(tck) {
+    return (
+        <tr>
+            <td>{tck.ticketNumber}</td>
+            <td>{tck.description}</td>
+            <td>{tck.state}</td>
+            <td>{tck.responsible}</td>
+            <td>{tck.deadLine}</td>
+
+            <td className="text-right">
+                <Button className="primary" color="primary" size="sm">
+                    <i className="tim-icons icon-simple-add"/>{" "}
+                    Tarea
+                </Button>{` `}
+                <Button className="btn-icon" color="info" size="sm">
+                    <i className="fa fa-edit"></i>
+                </Button>{` `}
+            </td>
+        </tr>
+
+    )
+} 
 
 export default function Tickets() {
-   
+
+    const [tickets, setTickets] = React.useState(null);
+
+    React.useEffect(() => {
+        TicketService.getTickets(function(res){
+            console.log(res)
+            setTickets(res);    
+        })
+    }, []);
+  
+    if (!tickets) return null;
 
     return (
         <div className="content">
@@ -49,22 +86,9 @@ export default function Tickets() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>123</td>
-                        <td>Falla al clickear boton de aceptar</td>
-                        <td>Asignado</td>
-                        <td>Franco Mariotti</td>
-                        <td>24/04/2021</td>
-                        <td className="text-right">
-                            <Button className="primary" color="primary" size="sm">
-                                <i className="tim-icons icon-simple-add"/>{" "}
-                                Tarea
-                            </Button>{` `}
-                            <Button className="btn-icon" color="info" size="sm">
-                                <i className="fa fa-edit"></i>
-                            </Button>{` `}
-                        </td>
-                    </tr>
+                    {   
+                        tickets.map(tck => displayTicket(tck))
+                    }
                 </tbody>
             </Table>
         </div>
