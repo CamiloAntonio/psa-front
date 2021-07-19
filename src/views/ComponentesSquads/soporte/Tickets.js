@@ -7,7 +7,7 @@ import { Button , FormGroup,
 import React from "react";
 
 
-import { Link } from 'react-router-dom';
+import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "../../../services/soporte/ticket.service";
 
 
@@ -25,9 +25,11 @@ function displayTicket(tck) {
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Button className="btn-icon" color="info" size="sm">
-                    <i className="fa fa-edit"></i>
-                </Button>{` `}
+                <Link to="./edicion_ticket">
+                    <Button className="btn-icon" color="info" size="sm">
+                        <i className="fa fa-edit"></i>
+                    </Button>{` `}
+                </Link>
             </td>
         </tr>
 
@@ -38,18 +40,21 @@ export default function Tickets() {
 
     const [tickets, setTickets] = React.useState(null);
 
+    let {product,version} = useParams();
+    let { path, url } = useRouteMatch();
+
     React.useEffect(() => {
-        TicketService.getTickets(function(res){
+        TicketService.getTicketByProductAndVersion(product,version,function(res){
             console.log(res)
             setTickets(res);    
         })
-    }, []);
+    }, [product,version]);
   
     if (!tickets) return null;
 
     return (
         <div className="content">
-            <h1>Tickets</h1>
+            <h1>Tickets - {product} - Version: {version} </h1>
             <form>
                 <FormGroup>
                     <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
@@ -65,9 +70,9 @@ export default function Tickets() {
             </form>
 
             <hr color="#4c4c4c"></hr>
-        
+
             <div className="text-left">
-                <Link to="./creacion_ticket">
+                <Link to={`${url}/creacion_ticket`}>
                     <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Ticket

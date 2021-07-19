@@ -6,7 +6,7 @@ import EdicionTicket from "./views/ComponentesSquads/soporte/EdicionTicket";
 
 var routes = [
     {
-        path: "/soporte/creacion_ticket",
+        path: "/soporte/tickets/:product/:version/creacion_ticket",
         name: "Creacion de Tickets",
         component: CreacionTicket,
         layout: "/admin",
@@ -20,12 +20,13 @@ var routes = [
         redirect: true
       },
       {
-        path: "/soporte/tickets",
+        path: "/soporte/tickets/:product/:version",
         name: "Tickets",
         icon: "tim-icons icon-paper",
         rtlName: "خرائط",
         component: Tickets,
         layout: "/admin",
+          redirect: true
       },
       {
         path: "/soporte",

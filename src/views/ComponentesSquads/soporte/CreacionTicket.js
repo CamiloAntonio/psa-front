@@ -10,7 +10,7 @@ import {
     CardBody
 } from "reactstrap";
 
-import { Link } from 'react-router-dom';
+import { Link,useParams } from 'react-router-dom';
 
 
 const FormularioCreacion = () => {
@@ -81,14 +81,14 @@ const FormularioCreacion = () => {
                         />
                     </FormGroup>
                     <div className="text-right">
-                        <Button color="primary" type="submit" size="sm">
-                            Crear
-                        </Button> {' '}
                         <Link to="./tickets">
                             <Button color="info" size="sm">
                                 Volver
                             </Button>
                         </Link>
+                        <Button color="primary" type="submit" size="sm">
+                            Crear
+                        </Button> {' '}
                     </div>
                 </form>
             </CardBody>
@@ -98,11 +98,12 @@ const FormularioCreacion = () => {
 
 export default function CreacionTicket() {
 
-    const producto = {nombre:'Producto1',version:'1.2.3'}
+    //const producto = {nombre:'Producto1',version:'1.2.3'}
+    let {product,version} = useParams();
 
     return (
          <div className="content">
-             <h1>Creacion de ticket - {producto.nombre} - version: {producto.version}</h1>
+             <h1>Creacion de ticket - {product} - Version: {version}</h1>
 
              {FormularioCreacion()}
 

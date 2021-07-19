@@ -11,6 +11,7 @@ import {
     CardBody
 } from "reactstrap";
 import TicketService from "../../../services/soporte/ticket.service";
+import {Link} from "react-router-dom";
 
 const FormularioEdicion = () => {
 
@@ -94,7 +95,15 @@ const FormularioEdicion = () => {
                         />
                     </FormGroup>
                     <div className="text-right">
-                        <Button color="primary" type="submit" onClick={(e)=>TicketService.updateTicket()}>
+                        <Link to="./tickets">
+                                <Button color="info" size="sm">
+                                    Volver
+                                </Button>
+                        </Link>
+                        <Button color="danger" size="sm">
+                            Eliminar
+                        </Button>
+                        <Button color="primary" type="submit"  size="sm" onClick={(e)=>TicketService.updateTicket()}>
                             Confirmar cambios
                         </Button>
                     </div>
