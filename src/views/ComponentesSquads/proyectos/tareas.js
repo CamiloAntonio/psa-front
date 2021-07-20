@@ -4,23 +4,25 @@ import { useEffect, useState } from 'react';
 import { Table, Button } from 'reactstrap';
 
 
-const proyects = [{ id: 1, nombre: "Ganar el mundial", lider_de_proyecto: "Messi" }]
+const tasks = [{"name":"lavar el auto","description":"franco tiene que lavar el auto","associated_project_id":0,"assigned_worker":{"legajo":0,"Nombre":"string","Apellido":"string"},"id":37795658689678337769717990116820166939,"status":"No Iniciado"}]
 
 export default function Tareas() {
-    const [proyectos, setProyectos] = useState(proyects)
+    const [tareas, setTareas] = useState(tasks)
 
     useEffect(() => {
-        fetch("https://modulo-proyectos.herokuapp.com/projects/")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result)
-                },
-                (error) => {
-                    console.log("hubo error man")
-                }
-            )
-    }, [])
+        projectService.getTasks()
+          .then(res => res.json())
+          .then(
+            (result) => {
+                setTareas(result)
+              console.log(result)
+            },
+            (error) => {
+              console.log("hubo error bro")
+            }
+          )
+      }, [])
+    
 
 
 
@@ -45,31 +47,26 @@ export default function Tareas() {
     return (
         <div className="content">
             <h1>Tareas</h1>
-            <Button>Crear proyecto</Button>
+            <Button>Crear Tarea</Button>
             <Table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nombre</th>
+                        <th>Descripcion</th>
                         <th>Lider de equipo</th>
                     </tr>
                 </thead>
-                {proyectos.map(proyecto => (
+                {tareas.map(tarea => (
                     <tbody>
                         <tr>
                             <th scope="row">22</th>
-                            <td>{proyecto.nombre}</td>
-                            <td>Lionel Messi</td>
+                            <td>{tarea.name}</td>
+                            <td>{tarea.description}</td>
+                            <td>{tarea.assigned_worker.Nombre} {tarea.assigned_worker.Apellido}</td>
                         </tr>
                     </tbody>
                 ))}
-                <tbody>
-                    <tr>
-                        <th scope="row">22</th>
-                        <td>Ganar la copa</td>
-                        <td>Lionel Messi</td>
-                    </tr>
-                </tbody>
             </Table>
         </div>
     )

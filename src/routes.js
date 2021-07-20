@@ -30,7 +30,7 @@ var routes = [
     icon: "tim-icons icon-time-alarm",
     component: Horas,
     layout: "/admin",
-  }
+  },
   // {
   //   path: "/notifications",
   //   name: "Alertas",

@@ -16,22 +16,26 @@ import {
 } from "reactstrap";
 
 const sampleProject = {
-  "nombre": "salir campeones",
+  "nombre": "salir 2dos",
   "lider_de_equipo": {
-    "id": 33,
-    "name": "Mascherano"
+    "legajo": 4,
+    "Nombre": "Roman",
+    "Apellido": "Riquelme"
   },
   "personas_asignadas": [
     {
-      "id": 0,
-      "name": ""
+      "legajo": 0,
+      "Nombre": "string",
+      "Apellido": "string"
     }
   ]
 }
 
+const sampleLeaders= [{"legajo":1,"Nombre":"Mario","Apellido":"Mendoza"},{"legajo":2,"Nombre":"Maria","Apellido":"Perez"},{"legajo":3,"Nombre":"Patricia","Apellido":"Gaona"}]
+
 export default function CrearProyecto() {
   const [projectDetails, setProjectDetails] = useState(sampleProject)
-  const [resources, setResources] = useState([])
+  const [resources, setResources] = useState(sampleLeaders)
 
   useEffect(() => {
     projectService.getResources()
@@ -53,9 +57,11 @@ export default function CrearProyecto() {
     setProjectDetails(newProjectDetails)
   }
 
-  function handleEditTeamLeader(e) {
+  function handleSelectTeamLeader(e) {
+    console.log(e.target.value )
     let newProjectDetails = { ...projectDetails }
-    newProjectDetails.lider_de_equipo.id = e.target.value
+    
+    newProjectDetails.lider_de_equipo = resources.filter(r => r.legajo == e.target.value)[0]
     setProjectDetails(newProjectDetails)
   }
 
@@ -83,13 +89,24 @@ export default function CrearProyecto() {
         <Col className="pl-md-1" md="4">
           <FormGroup>
             <label>Lider de Equipo</label>
-            <Input
+            <Input value={projectDetails.lider_de_equipo.id} type="select" name="selectLeader" id="leader" required onChange={handleSelectTeamLeader}>
+                            {resources.map((leader) =>
+                                <option value={leader.legajo} key={leader.legajo}>{leader.Nombre} {leader.Apellido}</option>
+                            )}
+            </Input>
+            {/* <select value={projectDetails.lider_de_equipo.id} onClick={handleSelectTeamLeader} className="form-control" id="exampleFormControlSelect1">
+                      {resources.map( leader => {
+                          return (<option key={leader.legajo} value={leader.legajo}>{leader.Nombre} {leader.Apellido}</option>
+                        )
+                      })}
+            </select> */}
+            {/* <Input
               placeholder="Lider"
               type="number"
               defaultValue={projectDetails.lider_de_equipo.name}
               name="lider_de_equipo"
               onChange={handleEditTeamLeader}
-            />
+            /> */}
           </FormGroup>
         </Col>
       </Row>

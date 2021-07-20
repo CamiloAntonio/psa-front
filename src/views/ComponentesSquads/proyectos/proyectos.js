@@ -26,8 +26,8 @@ export default function Proyectos() {
 
 
   function handleDeleteProject(e){
-    console.log("la key es esta". e.target.key)
-    projectService.deleteProjectById(e.target.key)
+    console.log("la key es esta", e.target.value)
+    projectService.deleteProjectById(e.target.value)
   }
 
 
@@ -51,8 +51,8 @@ export default function Proyectos() {
               <Link to={`proyecto/${proyecto.id}`} style={{ 'color': 'inherit' }}>
                 <td>{proyecto.nombre}</td>
               </Link>
-              <td>{proyecto.lider_de_equipo.name}</td>
-              <Button onClick={handleDeleteProject} key={proyecto.id}> Borrar </Button>
+              <td>{proyecto.lider_de_equipo.Nombre} {proyecto.lider_de_equipo.Apellido}</td>
+              <Button onClick={handleDeleteProject} value={proyecto.id}> Borrar </Button>
             </tr>
           </tbody>
         ))}
