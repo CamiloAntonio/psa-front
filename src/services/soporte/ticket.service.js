@@ -5,7 +5,14 @@ const API_URL = "https://psa-suport-module.herokuapp.com/";
 class TicketService {
 
     getTickets(callback){
-        return axios.get(API_URL + "tickets").
+        axios.get(API_URL + "tickets").
+        then (res => {return callback(res.data)});
+    }
+
+
+    //Habria que resolver problema con el back,ver como mandar los parametros ya que el get no permite parametros por body
+    getTicketByProductAndVersion(productName, versionNumber, callback) {
+        axios.get(API_URL + "tickets/" + productName + "/" + versionNumber).
         then (res => {return callback(res.data)});
     }
 

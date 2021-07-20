@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table,Button } from 'reactstrap';
 import TicketService from "../../../services/soporte/ticket.service";
+import {Link} from "react-router-dom";
 
 
 
@@ -41,9 +42,11 @@ export default function Soporte() {
                             <td>{producto.nombre}</td>
                             <td>{producto.version}</td>
                             <td className="text-right">
-                                <Button className="btn-info" color="info" size="sm" onClick={(e)=>TicketService.getTickets()}>
-                                    Tickets
-                                </Button>    
+                                <Link to={"./soporte/tickets/" + producto.nombre + "/" + producto.version}>
+                                    <Button className="btn-info" color="info" size="sm">
+                                        Tickets
+                                    </Button>
+                                </Link>
                             </td>
                         </tr>)}
                     
