@@ -20,6 +20,10 @@ export default function Proyecto({match}) {
     return (
         <div className="content">
             {proyecto.nombre}
+            {proyecto.fecha_inicio}
+            {proyecto.estado}
+
+            
         </div>
     )
 }

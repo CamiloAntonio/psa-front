@@ -41,6 +41,14 @@ export default function Proyectos() {
             <th>ID</th>
             <th>Nombre</th>
             <th>Lider de equipo</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Limite Inicio</th>
+            <th>Fecha Estimada Fin</th>
+            <th>Fecha Fin</th>
+            <th>Estado</th>
+
+
+
           </tr>
         </thead>
         {proyectos && proyectos.map(proyecto => (
@@ -52,6 +60,15 @@ export default function Proyectos() {
                 <td>{proyecto.nombre}</td>
               </Link>
               <td>{proyecto.lider_de_equipo.Nombre} {proyecto.lider_de_equipo.Apellido}</td>
+              <td>{proyecto.fecha_inicio}</td>
+              <td>{proyecto.fecha_limite_inicio}</td>
+              <td>{proyecto.fecha_estimada_fin}</td>
+              <td>{proyecto.fecha_fin}</td>
+              <td>{proyecto.estado}</td>
+
+
+
+
               <Button onClick={handleDeleteProject} value={proyecto.id}> Borrar </Button>
             </tr>
           </tbody>

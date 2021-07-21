@@ -14,6 +14,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import DatePicker from "react-date-picker";
 
 const sampleProject = {
   "nombre": "salir 2dos",
@@ -28,14 +29,20 @@ const sampleProject = {
       "Nombre": "string",
       "Apellido": "string"
     }
-  ]
+  ],
+  fecha_inicio: (new Date()).toLocaleDateString(),
+  fecha_limite_inicio: (new Date()).toLocaleDateString(),
+  fecha_estimada_fin: (new Date()).toLocaleDateString()
+
 }
 
+// 
 const sampleLeaders= [{"legajo":1,"Nombre":"Mario","Apellido":"Mendoza"},{"legajo":2,"Nombre":"Maria","Apellido":"Perez"},{"legajo":3,"Nombre":"Patricia","Apellido":"Gaona"}]
 
 export default function CrearProyecto() {
   const [projectDetails, setProjectDetails] = useState(sampleProject)
   const [resources, setResources] = useState(sampleLeaders)
+  const [fecha, setFecha] = useState(new Date())
 
   useEffect(() => {
     projectService.getResources()
@@ -68,7 +75,23 @@ export default function CrearProyecto() {
   function submitCreateProject() {
     console.log("se toco el boton")
     projectService.postProject(projectDetails)
+    window.location.replace("/proyectos");
   }
+
+  function handleChangeFecha(e) {
+    console.log(e)
+    setFecha(e)
+    let newProjectDetails = { ...projectDetails }
+    newProjectDetails.fecha_inicio = e.toLocaleDateString()
+    setProjectDetails(newProjectDetails)
+  }
+
+  //   this.setState(
+  //     {
+  //       horarios: horariosDisponibles
+  //     });
+
+  //   }
 
   return (
     <div className="content">
@@ -94,20 +117,10 @@ export default function CrearProyecto() {
                                 <option value={leader.legajo} key={leader.legajo}>{leader.Nombre} {leader.Apellido}</option>
                             )}
             </Input>
-            {/* <select value={projectDetails.lider_de_equipo.id} onClick={handleSelectTeamLeader} className="form-control" id="exampleFormControlSelect1">
-                      {resources.map( leader => {
-                          return (<option key={leader.legajo} value={leader.legajo}>{leader.Nombre} {leader.Apellido}</option>
-                        )
-                      })}
-            </select> */}
-            {/* <Input
-              placeholder="Lider"
-              type="number"
-              defaultValue={projectDetails.lider_de_equipo.name}
-              name="lider_de_equipo"
-              onChange={handleEditTeamLeader}
-            /> */}
           </FormGroup>
+
+          <DatePicker value={fecha} name="fecha" onChange={handleChangeFecha}/>
+
         </Col>
       </Row>
       <Button onClick={submitCreateProject}>+ Crear</Button>

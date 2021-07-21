@@ -21,7 +21,6 @@ class UserService {
   }
 
   postProject(projectDetails) {
-    console.log("en el service")
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
