@@ -43,13 +43,12 @@ export default function Proyecto({match}) {
     }, [])
     return (
         <div className="content">
-
-            {proyecto.nombre}
-            {proyecto.fecha_inicio}
-            {proyecto.estado}
+          <tbody>
+            <tr>{proyecto.nombre}</tr>
+            <tr>{proyecto.fecha_inicio}</tr>
+            <tr>{proyecto.estado}</tr>
             {proyecto.personas_asignadas.map( persona => (<li>{persona.Nombre}</li>))}
-
-            
+          </tbody>  
         </div>
     )
 }
