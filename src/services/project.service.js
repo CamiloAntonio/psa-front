@@ -16,8 +16,8 @@ class UserService {
   }
 
   deleteProjectById(id) {
-    let pjs = fetch(PORJECTS_API_URL + id, { method: 'DELETE'});
-    return pjs
+    let res = fetch(PORJECTS_API_URL + id, { method: 'DELETE'});
+    return res
   }
 
   postProject(projectDetails) {
@@ -27,6 +27,7 @@ class UserService {
       body: JSON.stringify(projectDetails)
     };
     const res = fetch(PORJECTS_API_URL, requestOptions)
+    return res
   }
 
   getResources() {
@@ -39,6 +40,16 @@ class UserService {
     let pjs = fetch(TASKS_API_URL);
     console.log(pjs)
     return pjs
+  }
+
+  postTask(taskDetails) {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(taskDetails)
+    };
+    const res = fetch(TASKS_API_URL, requestOptions)
+    return res
   }
 
 }

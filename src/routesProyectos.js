@@ -2,6 +2,7 @@ import Proyectos from "views/ComponentesSquads/proyectos/proyectos";
 import Tareas from "views/ComponentesSquads/proyectos/tareas";
 import CrearProyecto from "views/ComponentesSquads/proyectos/crearProyecto";
 import Proyecto from "views/ComponentesSquads/proyectos/proyecto";
+import CrearTarea from "views/ComponentesSquads/proyectos/crearTarea";
 
 
 
@@ -33,10 +34,19 @@ var routes = [
   },
   {
     path: "/proyecto/:id",
-    name: "Crear Proyecto",
+    name: "Proyecto",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Proyecto,
+    layout: "/admin",
+    redirect: true
+  },
+  {
+    path: "/crear-tarea/",
+    name: "Crear Tarea",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-chart-pie-36",
+    component: CrearTarea,
     layout: "/admin",
     redirect: true
   },
