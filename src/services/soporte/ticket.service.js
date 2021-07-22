@@ -9,10 +9,18 @@ class TicketService {
         then (res => {return callback(res.data)});
     }
 
-
-    //Habria que resolver problema con el back,ver como mandar los parametros ya que el get no permite parametros por body
     getTicketByProductAndVersion(productName, versionNumber, callback) {
         axios.get(API_URL + "tickets/" + productName + "/" + versionNumber).
+        then (res => {return callback(res.data)});
+    }
+
+    getTicketById(id, callback) {
+        axios.get(API_URL + "tickets/" + id).
+        then (res => {return callback(res.data)});
+    }
+
+    createTicket(ticket, callback) {
+        axios.post(API_URL + "tickets", ticket).
         then (res => {return callback(res.data)});
     }
 

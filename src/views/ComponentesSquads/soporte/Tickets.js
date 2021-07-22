@@ -1,17 +1,17 @@
 import { Button , FormGroup,
     Label,
     Input,
-    Table
+    Table,
+    Alert
     } from 'reactstrap';
 
-import React from "react";
-
-
+import React,{useState , useEffect} from "react";
 import { Link,useParams,useRouteMatch} from 'react-router-dom';
-import TicketService from "../../../services/soporte/ticket.service";
+import TicketService from "services/soporte/ticket.service";
 
 
-function displayTicket(tck) {
+function displayTicket(tck,url) {
+    
     return (
         <tr>
             <td>{tck.ticketNumber}</td>
@@ -25,7 +25,7 @@ function displayTicket(tck) {
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to="./edicion_ticket">
+                <Link to={`${url}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"></i>
                     </Button>{` `}
@@ -37,17 +37,19 @@ function displayTicket(tck) {
 } 
 
 export default function Tickets() {
-
-    const [tickets, setTickets] = React.useState(null);
-
     let {product,version} = useParams();
     let { path, url } = useRouteMatch();
+    
+    const [tickets, setTickets] = useState(null);
+    const [hidden, setHidden] = useState(true);
+    
+    useEffect(() => {
+        let handleResponse  = function (tcks) {
+            setTickets(tcks);
+            setHidden((tcks.length > 0));
+        }
 
-    React.useEffect(() => {
-        TicketService.getTicketByProductAndVersion(product,version,function(res){
-            console.log(res)
-            setTickets(res);    
-        })
+        TicketService.getTicketByProductAndVersion(product,version,handleResponse)
     }, [product,version]);
   
     if (!tickets) return null;
@@ -59,8 +61,8 @@ export default function Tickets() {
                 <FormGroup>
                     <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
                     <Input
-                    type="email"
-                    name="email"
+                    type="number"
+                    name="numeroTicket"
                     id="exampleEmail"
                     />
                 </FormGroup>
@@ -80,7 +82,9 @@ export default function Tickets() {
                 </Link>
             </div>
 
-            <Table>
+            {!hidden && <Alert color="default">No hay tickets asociados</Alert>}
+
+            {hidden && <Table>
                 <thead>
                     <tr>
                         <th>Nro Ticket</th>
@@ -92,10 +96,10 @@ export default function Tickets() {
                 </thead>
                 <tbody>
                     {   
-                        tickets.map(tck => displayTicket(tck))
+                        tickets.map(tck => displayTicket(tck,url))
                     }
                 </tbody>
-            </Table>
+            </Table>}
         </div>
     )
 }
