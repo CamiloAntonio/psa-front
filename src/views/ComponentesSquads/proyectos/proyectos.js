@@ -28,13 +28,23 @@ export default function Proyectos() {
   function handleDeleteProject(e){
     console.log("la key es esta", e.target.value)
     projectService.deleteProjectById(e.target.value)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        window.location.reload()
+        console.log(result)
+      },
+      (error) => {
+        console.log("hubo error bro")
+      }
+    )
   }
 
 
   return (
     <div className="content">
       <h1>Proyectos</h1>
-      <Link to={"/admin/crear-proyecto/"} style={{ 'color': 'inherit' }}><Button>Crear proyecto</Button> </Link>
+      <Link to={"/admin/crear-proyecto/"} style={{ 'color': 'inherit' }}><Button>Crear proyecto</Button></Link>
       <Table>
         <thead>
           <tr>
