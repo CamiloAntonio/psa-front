@@ -1,19 +1,27 @@
 import React from 'react'
 import { Table,Button } from 'reactstrap';
+import {Link} from "react-router-dom";
+
 
 
 export default function Soporte() {
-    const proyectos = [{
-        nombre:"proyecto1",
-        version:"1.0.0"
+    const productos = [{
+        nombre:"PSA Business Analytics",
+        version:"3.1.0"
     },{
-        nombre:"proyecto2",
-        version:"1.2.0"
-    },{
-        nombre:"proyecto3",
+        nombre:"PSA Spring CRM",
         version:"2.0.0"
+    },{
+        nombre:"PSA Business Analytics",
+        version:"2.0.1"
+    },{
+        nombre:"PSA Spring REP",
+        version:"3.3.1"
+    },{
+        nombre:"PSA Spring REP",
+        version:"2.2.0"
     }];
-    
+
 
     return (
         <div className="content">
@@ -28,15 +36,16 @@ export default function Soporte() {
                     </tr>
                 </thead>
                 <tbody>
-                    {proyectos.map((proyecto) => 
+                    {productos.map((producto) =>
                         <tr>
-                            <td>{proyecto.nombre}</td>
-                            <td>{proyecto.version}</td>     
+                            <td>{producto.nombre}</td>
+                            <td>{producto.version}</td>
                             <td className="text-right">
-                                <Button className="btn-info" color="info" size="sm">
-                                    {/*<i className="fa fa-user"></i>*/}
-                                    Tickets
-                                </Button>    
+                                <Link to={"./soporte/tickets/" + producto.nombre + "/" + producto.version}>
+                                    <Button className="btn-info" color="info" size="sm">
+                                        Tickets
+                                    </Button>
+                                </Link>
                             </td>
                         </tr>)}
                     

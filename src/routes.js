@@ -7,21 +7,14 @@ import TableList from "views/TableList.js";
 import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import ToDo from  "views/ToDo.js"
-import Soporte from "views/ComponentesSquads/soporte/Soporte.js"
-import CreacionTicket from "views/ComponentesSquads/soporte/CreacionTicket.js"
+
 import Recursos from "views/ComponentesSquads/Recursos"
 import Horas from "views/ComponentesSquads/Horas";
-
+import Proyectos from "views/ComponentesSquads/proyectos/proyectos";
+import routesProyectos from "routesProyectos";
+import routesSoporte from "routesSoporte";
 
 var routes = [
-  {
-    path: "/proyecto",
-    name: "Proyecto",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-chart-pie-36",
-    component: Dashboard,
-    layout: "/admin",
-  },
   {
     path: "/recursos",
     name: "Recursos",
@@ -38,24 +31,6 @@ var routes = [
     component: Horas,
     layout: "/admin",
   },
-  {
-    path: "/soporte",
-    name: "Soporte",
-    rtlName: "خرائط",
-    icon: "tim-icons icon-pin",
-    component: Soporte,
-    layout: "/admin",
-    // redirect: true
-  },
-  {
-    path: "/creacion_ticket",
-    name: "Creacion de Tickets",
-    rtlName: "",
-    icon: "",
-    component: CreacionTicket,
-    layout: "/admin",
-    redirect: true
-  },
   // {
   //   path: "/notifications",
   //   name: "Alertas",
@@ -64,14 +39,14 @@ var routes = [
   //   component: Notifications,
   //   layout: "/admin",
   // },
-  // {
-  //   path: "/user-profile",
-  //   name: "Mensajeria",
-  //   rtlName: "ملف تعريفي للمستخدم",
-  //   icon: "tim-icons icon-single-02",
-  //   component: UserProfile,
-  //   layout: "/admin",
-  // },
+  {
+    path: "/user-profile",
+    name: "Mensajeria",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: "tim-icons icon-single-02",
+    component: UserProfile,
+    layout: "/admin",
+  },
   // {
   //   path: "/tables",
   //   name: "Facturacion",
@@ -105,4 +80,7 @@ var routes = [
   //   layout: "/admin",
   // },
 ];
+
+routes = routes.concat(routesSoporte,routesProyectos)
+
 export default routes;
