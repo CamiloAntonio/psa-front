@@ -10,38 +10,39 @@ import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "services/soporte/ticket.service";
 import ResourceService from "services/soporte/resource.service";
 
-function displayTicket(tck,url) {
-    var name = "Sin Asignar"
-    const NOTASSIGNED = "0";
+function Row(props) {
+    let tck = props.ticket;
+    const [resourceName, setResourceName] = useState("SinAsignar");
 
-    if (tck.responsible != 0) {    
-        ResourceService.getResourceWithId(tck.responsible,function(resource,name) {
-            name = resource.name;
-        },name);
-    }    
+    let responsible = tck.responsible;
+    let handleResponse  = function (resource) {
+        setResourceName(resource.name + " " + resource.surname);
+    }
+    
+    if(parseInt(responsible) !== 0 && responsible !== "") {
+        ResourceService.getResourceWithId(responsible,handleResponse);
+    }
+
     return (
         <tr>
             <td>{tck.ticketNumber}</td>
             <td>{tck.description}</td>
             <td>{tck.state}</td>
-            <td>{name}</td>
+            <td>{resourceName}</td>
             <td>{tck.deadLine}</td>
-
             <td className="text-right">
                 <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
+                <Link to={`${props.url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"></i>
                     </Button>{` `}
                 </Link>
             </td>
         </tr>
-
     )
-    
 } 
 
 
@@ -52,7 +53,6 @@ export default function Tickets() {
 
     const [tickets, setTickets] = useState([]);
     const [hidden, setHidden] = useState(true);
-    //const [resource, setResource] = useState(null);
 
     useEffect(() => {
         let handleResponse  = function (tcks) {
@@ -62,6 +62,7 @@ export default function Tickets() {
 
         TicketService.getTicketByProductAndVersion(product,version,handleResponse)
     }, [product,version]);
+
   
     if (!tickets) return null;
 
@@ -107,7 +108,7 @@ export default function Tickets() {
                 </thead>
                 <tbody>
                     {   
-                        tickets.map(tck => displayTicket(tck,url))
+                        tickets.map(tck => <Row ticket={tck} url={url}/>)
                     }
                 </tbody>
             </Table>}

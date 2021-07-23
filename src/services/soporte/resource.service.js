@@ -8,9 +8,9 @@ class ResourceService {
         then (res => {return callback(res.data)});
     }
 
-    async getResourceWithId(resourceId, callback,setFunc) {
-        axios.get(API_URL + "resource/" + resourceId).
-        then (res => {return callback(res.data,setFunc)});
+    getResourceWithId(id, callback) {
+        axios.get(API_URL + "resource/" + id)
+        .then (res => {return callback(res.data)});
     }
 }
 

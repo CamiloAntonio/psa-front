@@ -54,17 +54,18 @@ export default function CreacionTicket() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(newTicket);
-        TicketService.createTicket();
+        TicketService.createTicket(newTicket,function(res) {
+            console.log(res);
+        });
     };
 
-    const [clients,setClients] = React.useState([]);
+    const [clients,setClients] = useState([]);
     useEffect(() => {
         let clients = ClientService.getClients();
         console.log(clients)
     },[setClients]);
     
-    const [resources, setResources] = React.useState([]);
+    const [resources, setResources] = useState([]);
     useEffect(() => {
         ResourceService.getResources(function(res){
             setResources(res);
