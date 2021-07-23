@@ -19,9 +19,9 @@ import DatePicker from "react-date-picker";
 const sampleProject = {
   "nombre": "salir 2dos",
   "lider_de_equipo": {
-    "legajo": 4,
-    "Nombre": "Roman",
-    "Apellido": "Riquelme"
+    "legajo": undefined,
+    "Nombre": undefined,
+    "Apellido": undefined
   },
   "personas_asignadas": [],
   fecha_inicio: (new Date()).toLocaleDateString(),
@@ -37,8 +37,8 @@ const samplePersonas= [{"legajo":7,"Nombre":"Franco","Apellido":""}, {"legajo":1
 
 export default function CrearProyecto() {
   const [projectDetails, setProjectDetails] = useState(sampleProject)
-  const [resources, setResources] = useState(sampleLeaders)
-  const [personas, setPersonas] = useState(samplePersonas)
+  const [resources, setResources] = useState([])
+  // const [personas, setPersonas] = useState([])
 
   const [fechas, setFechas] = useState({fecha_estimada_fin: new Date(), fecha_limite_inicio: new Date(), fecha_inicio: new Date()})
 
@@ -67,7 +67,7 @@ export default function CrearProyecto() {
     console.log(e.target.value )
     let newProjectDetails = { ...projectDetails }
     
-    newProjectDetails.lider_de_equipo = resources.filter(r => r.legajo == e.target.value)[0]
+    newProjectDetails.lider_de_equipo = resources.filter(r => r.resourceID == e.target.value)[0]
     setProjectDetails(newProjectDetails)
   }
 
@@ -75,7 +75,8 @@ export default function CrearProyecto() {
     console.log(e.target.value )
     let newProjectDetails = { ...projectDetails }
     
-    newProjectDetails.personas_asignadas.push(personas.filter(r => r.legajo == e.target.value)[0])
+    newProjectDetails.personas_asignadas.push(resources.filter(r => r.resourceID == e.target.value)[0])
+
     setProjectDetails(newProjectDetails)
   }
 
@@ -101,12 +102,6 @@ export default function CrearProyecto() {
     setProjectDetails(newProjectDetails)
   }
 
-  //   this.setState(
-  //     {
-  //       horarios: horariosDisponibles
-  //     });
-
-  //   }
 
   return (
     <div className="content">
@@ -128,8 +123,9 @@ export default function CrearProyecto() {
           <FormGroup>
             <label>Lider de Equipo</label>
             <Input value={projectDetails.lider_de_equipo.id} type="select" name="selectLeader" id="leader" required onChange={handleSelectTeamLeader}>
+                            {!projectDetails.lider_de_equipo.resourceID && (<option>-</option>)}
                             {resources.map((leader) =>
-                                <option value={leader.legajo} key={leader.legajo}>{leader.Nombre} {leader.Apellido}</option>
+                                <option value={leader.resourceID} key={leader.resourceID}>{leader.name} {leader.surname}</option>
                             )}
             </Input>
           </FormGroup>
@@ -139,23 +135,56 @@ export default function CrearProyecto() {
           <FormGroup>
             <label>Personas asignadas</label>
             <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
-                            {personas.map((persona) =>
-                                <option value={persona.legajo} key={persona.legajo}>{persona.Nombre} {persona.Apellido}</option>
+                            {projectDetails.personas_asignadas.length==0 && (<option>-</option>)}
+                            {resources.map((resource) =>
+                                <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
                             )}
             </Input>
           </FormGroup>
         </Col>
+
+         </Row>
+
           
-          <label>Fecha Inicio</label>
+
+         <Row>
+
+        <Col className="pl-md-1" md="2">
+          <div>
+            <label>Fecha Inicio</label>
+          </div>
           <DatePicker value={fechas.fecha_inicio} name="fecha_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_inicio"})}/>
-
-          <label>Fecha Limite Inicio</label>
+        </Col>
+                             
+        <Col className="pl-md-1" md="2">
+          <div>                 
+            <label>Fecha Limite Inicio</label>
+          </div>
           <DatePicker value={fechas.fecha_limite_inicio} name="fecha_limite_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_limite_inicio"})}/>
-
-          <label>Fecha Estimada Fin</label>
+        </Col>
+        <Col className="pl-md-1" md="4">
+          <div>
+            <label>Fecha Estimada Fin</label>
+          </div>
           <DatePicker value={fechas.fecha_estimada_fin} name="fecha_estimada_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_estimada_fin"})}/>
+        </Col>
 
-      </Row>
+        <Col className="pl-md-1" md="4">
+        {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surnname}</li>)) }
+        </Col>
+
+        </Row>
+
+         <Row>
+        
+        </Row>
+
+        {/* <Row>
+          <Col className="pl-md-1" md="4">
+          {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surnname}</li>)) }
+          </Col>
+        </Row> */}
+
       <Button onClick={submitCreateProject}>+ Crear</Button>
     </div>
   )
