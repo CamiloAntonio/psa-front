@@ -11,7 +11,7 @@ import TicketService from "services/soporte/ticket.service";
 
 
 function displayTicket(tck,url) {
-    
+
     return (
         <tr>
             <td>{tck.ticketNumber}</td>
@@ -25,7 +25,7 @@ function displayTicket(tck,url) {
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to={`${url}/edicion_ticket`}>
+                <Link to={`${url}${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"></i>
                     </Button>{` `}
@@ -39,10 +39,10 @@ function displayTicket(tck,url) {
 export default function Tickets() {
     let {product,version} = useParams();
     let { path, url } = useRouteMatch();
-    
+
     const [tickets, setTickets] = useState(null);
     const [hidden, setHidden] = useState(true);
-    
+
     useEffect(() => {
         let handleResponse  = function (tcks) {
             setTickets(tcks);
@@ -74,7 +74,7 @@ export default function Tickets() {
             <hr color="#4c4c4c"></hr>
 
             <div className="text-left">
-                <Link to={`${url}/creacion_ticket`}>
+                <Link to={`${url}creacion_ticket`}>
                     <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Ticket

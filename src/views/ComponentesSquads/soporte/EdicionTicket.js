@@ -10,120 +10,161 @@ import {
     Card,
     CardBody
 } from "reactstrap";
+
 import TicketService from "../../../services/soporte/ticket.service";
-import {Link} from "react-router-dom";
+import ResourceService from "../../../services/soporte/resource.service";
+import {Link,useParams,useRouteMatch} from "react-router-dom";
 
-const FormularioEdicion = () => {
 
-    const severidades = [{nombre:"S1 (7 dias para resolver)"},
-        {nombre:"S2 (30 dias para resolver)"},
-        {nombre:"S3 (90 dias para resolver)"},
-        {nombre:"S4 (365 dias para resolver)"}]
+function desplegarSeveridades (severidad, tktSeverity) {
+    if (severidad.nombre !== tktSeverity) return <option value={severidad.nombre}>{severidad.info}</option>
+    else return <option value={severidad.nombre} selected>{severidad.info}</option>
+}
 
-    const clientes = [{nombre:"Cliente1"},
-        {nombre:"Cliente2"},
-        {nombre:"CLiente3"}]
+function desplegarEstados (estado, tktState) {
+    if (estado !== tktState) return <option>{estado}</option>
+    else return <option selected>{estado}</option>
+}
 
-    const agentes = [{nombre:"Sin asignar"},
-        {nombre:"Agente1"},
-        {nombre:"Agente2"},
-        {nombre:"Agente3"}]
+function desplegarAgentes (agente, tktResponsible) {
+    if (agente.resourceID !== parseInt(tktResponsible,10)) return <option value={agente.resourceID}>{agente.name + " " + agente.surname}</option>
+    else return <option value={agente.resourceID} selected>{agente.name + " " + agente.surname}</option>
+}
+
+export default function EdicionTicket() {
+
+    const severidades = [{nombre:"S1",info:"S1 (7 dias para resolver)"},
+        {nombre:"S2",info:"S2 (30 dias para resolver)"},
+        {nombre:"S3",info:"S3 (90 dias para resolver)"},
+        {nombre:"S4",info:"S4 (365 dias para resolver)"}]
 
     const estados = [{nombre:"Nuevo"},
         {nombre:"En Progreso"},
         {nombre:"Terminado"},
         {nombre:"Bloqueado"}]
 
+    let {product,version,ticketId} = useParams();
+    let { path, url } = useRouteMatch();
 
-    return (
-        <Card>
-            <CardBody>
-                <form>
-                    <FormGroup>
-                        <Label for="titulo">Título *</Label>
-                        <Input
-                            type="text"
-                            name="titulo"
-                            id="titulo"
-                            placeholder="Ingerese un título"
-                            required
-                        />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="severidad">Severidad *</Label>
-                        <Input type="select" name="selectSeveridad" id="severidad" required>
-                            <option value="" selected disabled hidden>Seleccione la severidad</option>
-                            {severidades.map((severidad) =>
-                                <option>{severidad.nombre}</option>
-                            )}
-                        </Input>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="cliente">Cliente *</Label>
-                        <Input type="select" name="selectCliente" id="cliente" required>
-                            <option value="" selected disabled hidden>Seleccione el cliente al que quiera asociar el ticket</option>
-                            {clientes.map((cliente) =>
-                                <option>{cliente.nombre}</option>
-                            )}
-                        </Input>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="agente">Agente</Label>
-                        <Input type="select" name="selectAgente" id="agente">
-                            {agentes.map((agente) =>
-                                <option>{agente.nombre}</option>
-                            )}
-                        </Input>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="estado">Estado *</Label>
-                        <Input type="select" name="selectEstado" id="estado">
-                            <option value="" selected disabled hidden>Seleccione el estado del ticket</option>
-                            {estados.map((estado) =>
-                                <option>{estado.nombre}</option>
-                            )}
-                        </Input>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="descripcion">Descripción *</Label>
-                        <Input
-                            type="textarea"
-                            name="descripcion"
-                            id="descripcion"
-                            placeholder="Ingrese una descripcion para el ticket"
-                            required
-                        />
-                    </FormGroup>
-                    <div className="text-right">
-                        <Link to="./tickets">
-                                <Button color="info" size="sm">
-                                    Volver
-                                </Button>
-                        </Link>
-                        <Button color="danger" size="sm">
-                            Eliminar
-                        </Button>
-                        <Button color="primary" type="submit"  size="sm" onClick={(e)=>TicketService.updateTicket()}>
-                            Confirmar cambios
-                        </Button>
-                    </div>
-                </form>
-            </CardBody>
-        </Card>
-    );
-};
 
-export default function EdicionTicket() {
+    const handleChange = e => {
+        const {name, value} = e.target;
 
-    const producto = {nombre:'Producto1',version:'1.2.3'}
-    const tkt = {nro:100}
+        setTicket({
+            ...ticket,
+            [name] : value
+        });
+    };
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        console.log(ticket);
+        TicketService.updateTicket(ticket);
+    };
+
+    const [ticket,setTicket] = React.useState(null);
+    const [resources, setResources] = React.useState(null);
+
+    React.useEffect(() => {
+        TicketService.getTicketById(ticketId,function(res){
+            console.log(res)
+            setTicket(res);
+        })
+
+        ResourceService.getResources(function(res){
+            setResources(res);
+        })
+    }, [ticketId]);
+
+    if (!ticket || !resources) return null;
 
     return (
          <div className="content">
-             <h1>Edicion Ticket #{tkt.nro} - {producto.nombre} - version: {producto.version}</h1>
+             <h1>Edicion Ticket #{ticketId} - {product} - version: {version}</h1>
+                <Card>
+                    <CardBody>
+                        <form onSubmit={handleSubmit}>
+                            <FormGroup>
+                                <Label for="titulo">Título *</Label>
+                                <Input
+                                    type="text"
+                                    name="titulo"
+                                    id="titulo"
+                                    placeholder="Ingerese un título"
+                                    required
+                                    value={ticket.title}
+                                    onChange={handleChange}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="severidad">Severidad *</Label>
+                                <Input type="select" name="severity" id="severidad" onChange={handleChange} required>
+                                    {/*<option value="" selected disabled hidden>Seleccione la severidad</option>*/}
+                                    {severidades.map((severidad) =>
+                                        desplegarSeveridades(severidad,ticket.severity)
+                                    )}
+                                </Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="cliente">Cliente *</Label>
+                                <Input
+                                    type="text"
+                                    name="textCliente"
+                                    id="cliente"
+                                    required
+                                    readOnly
+                                    value={ticket.client}
+                                    onChange={handleChange}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="agente">Agente</Label>
+                                <Input type="select" name="responsible" id="agente" onChange={handleChange}>
 
-             {FormularioEdicion()}
+                                    <option>Sin Asignar</option>
+                                    {resources.map((resource) =>
+                                        desplegarAgentes(resource,ticket.responsible)
+                                    )}
 
+                                </Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="estado">Estado *</Label>
+                                <Input type="select" name="state" id="estado" onChange={handleChange}>
+                                    {/*<option value="" selected disabled hidden>Seleccione el estado del ticket</option>*/}
+                                    {estados.map((estado) =>
+                                        desplegarEstados(estado.nombre,ticket.state)
+                                    )}
+                                </Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="descripcion">Descripción *</Label>
+                                <Input
+                                    type="textarea"
+                                    name="descripcion"
+                                    id="descripcion"
+                                    placeholder="Ingrese una descripcion para el ticket"
+                                    required
+                                    value={ticket.description}
+                                    onChange={handleChange}
+                                />
+                            </FormGroup>
+                            <div className="text-right">
+                                <Link to="../">
+                                        <Button color="info" size="sm">
+                                            Volver
+                                        </Button>
+                                </Link>
+                                <Button color="danger" size="sm">
+                                    Eliminar
+                                </Button>
+                                <Button color="primary" type="submit"  size="sm">
+                                    Confirmar cambios
+                                </Button>
+                            </div>
+                        </form>
+                    </CardBody>
+                </Card>
          </div>
     )
 }
