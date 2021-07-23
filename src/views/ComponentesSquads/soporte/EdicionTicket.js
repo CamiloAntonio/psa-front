@@ -1,51 +1,53 @@
-import React from "react";
-
 
 import {
     FormGroup,
     Label,
     Input,
-    FormText,
     Button,
     Card,
     CardBody
 } from "reactstrap";
 
-import TicketService from "../../../services/soporte/ticket.service";
-import ResourceService from "../../../services/soporte/resource.service";
-import {Link,useParams,useRouteMatch} from "react-router-dom";
+import React from "react";
+
+import TicketService from "services/soporte/ticket.service";
+import ResourceService from "services/soporte/resource.service";
+import {useParams,useHistory} from "react-router-dom";
+import {ESTADOS} from "./estados"
 
 
-function desplegarSeveridades (severidad, tktSeverity) {
-    if (severidad.nombre !== tktSeverity) return <option value={severidad.nombre}>{severidad.info}</option>
-    else return <option value={severidad.nombre} selected>{severidad.info}</option>
-}
+//function desplegarSeveridades (severidad, tktSeverity) {
+//    if (severidad.nombre !== tktSeverity) return <option value={severidad.nombre}>{severidad.info}</option>
+//    else return <option value={severidad.nombre} selected>{severidad.info}</option>
+//}
 
-function desplegarEstados (estado, tktState) {
-    if (estado !== tktState) return <option>{estado}</option>
-    else return <option selected>{estado}</option>
-}
+//function desplegarEstados (estado, tktState) {
+//    if (estado !== tktState) return <option>{estado}</option>
+//    else return <option selected>{estado}</option>
+//}
 
-function desplegarAgentes (agente, tktResponsible) {
-    if (agente.resourceID !== parseInt(tktResponsible,10)) return <option value={agente.resourceID}>{agente.name + " " + agente.surname}</option>
-    else return <option value={agente.resourceID} selected>{agente.name + " " + agente.surname}</option>
+//function desplegarAgentes (agente, tktResponsible) {
+//    if (agente.resourceID !== parseInt(tktResponsible,10)) return <option value={agente.resourceID}>{agente.name + " " + agente.surname}</option>
+//    else return <option value={agente.resourceID} selected>{agente.name + " " + agente.surname}</option>
+//}
+
+
+function createOption(text,fcmp,param1,param2,value=null) {
+    return React.createElement('option',{value:value,selected:fcmp(param1,param2)},text);
 }
 
 export default function EdicionTicket() {
+    let {product,version,ticketId} = useParams();
+
+    let history = useHistory();
+    const goToPreviousPath = () => {
+        history.goBack()
+    }
 
     const severidades = [{nombre:"S1",info:"S1 (7 dias para resolver)"},
         {nombre:"S2",info:"S2 (30 dias para resolver)"},
         {nombre:"S3",info:"S3 (90 dias para resolver)"},
         {nombre:"S4",info:"S4 (365 dias para resolver)"}]
-
-    const estados = [{nombre:"Nuevo"},
-        {nombre:"En Progreso"},
-        {nombre:"Terminado"},
-        {nombre:"Bloqueado"}]
-
-    let {product,version,ticketId} = useParams();
-    let { path, url } = useRouteMatch();
-
 
     const handleChange = e => {
         const {name, value} = e.target;
@@ -62,8 +64,8 @@ export default function EdicionTicket() {
         TicketService.updateTicket(ticket);
     };
 
-    const [ticket,setTicket] = React.useState(null);
-    const [resources, setResources] = React.useState(null);
+    const [ticket,setTicket] = React.useState([]);
+    const [resources, setResources] = React.useState([]);
 
     React.useEffect(() => {
         TicketService.getTicketById(ticketId,function(res){
@@ -99,9 +101,11 @@ export default function EdicionTicket() {
                             <FormGroup>
                                 <Label for="severidad">Severidad *</Label>
                                 <Input type="select" name="severity" id="severidad" onChange={handleChange} required>
-                                    {/*<option value="" selected disabled hidden>Seleccione la severidad</option>*/}
                                     {severidades.map((severidad) =>
-                                        desplegarSeveridades(severidad,ticket.severity)
+                                        //desplegarSeveridades(severidad,ticket.severity)
+                                        createOption(severidad.nombre,(severidad, tktSeverity) => {
+                                            return (severidad == tktSeverity)
+                                        },severidad.nombre,ticket.state,severidad.info)
                                     )}
                                 </Input>
                             </FormGroup>
@@ -123,7 +127,10 @@ export default function EdicionTicket() {
 
                                     <option>Sin Asignar</option>
                                     {resources.map((resource) =>
-                                        desplegarAgentes(resource,ticket.responsible)
+                                        //desplegarAgentes(resource,ticket.responsible)
+                                        createOption((resource.name + " " + resource.surname),(agenteId,tktResponsible) => {
+                                            return (agenteId === parseInt(tktResponsible,10))
+                                        },resource.resourceID,ticket.responsible,resource.resourceID)
                                     )}
 
                                 </Input>
@@ -132,8 +139,11 @@ export default function EdicionTicket() {
                                 <Label for="estado">Estado *</Label>
                                 <Input type="select" name="state" id="estado" onChange={handleChange}>
                                     {/*<option value="" selected disabled hidden>Seleccione el estado del ticket</option>*/}
-                                    {estados.map((estado) =>
-                                        desplegarEstados(estado.nombre,ticket.state)
+                                    {ESTADOS.map((state) =>
+                                        //desplegarEstados(estado.nombre,ticket.state)
+                                        createOption(state.nombre,(state,tktState) => {
+                                            return state == tktState
+                                        },state.nombre,ticket.state)
                                     )}
                                 </Input>
                             </FormGroup>
@@ -150,11 +160,9 @@ export default function EdicionTicket() {
                                 />
                             </FormGroup>
                             <div className="text-right">
-                                <Link to="../">
-                                        <Button color="info" size="sm">
-                                            Volver
-                                        </Button>
-                                </Link>
+                                <Button color="info" size="sm" onClick={goToPreviousPath}>
+                                    Volver
+                                </Button>
                                 <Button color="danger" size="sm">
                                     Eliminar
                                 </Button>

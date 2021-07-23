@@ -25,18 +25,13 @@ class TicketService {
     }
 
     updateTicket(tkt){
-    return axios.put(API_URL + "tickets/" + tkt.ticketNumber, {
+    axios.put(API_URL + "tickets/" + tkt.ticketNumber, {
         "title" : tkt.title,
-        //Lo comento porque el cliente de un ticket no se deberia poder modificar
-        //"client" : tkt.client,
+        "client" : tkt.client,
         "responsible" : tkt.responsible,
-        //Habria que ver si al actualizar la severidad se actualiza automaticamente la fecha de vencimiento (Preguntar a Fer)
         "severity" : tkt.severity,
         "state" : tkt.state,
         "description" : tkt.description,
-    },
-    {
-        headers: {}
     });
   }
 }

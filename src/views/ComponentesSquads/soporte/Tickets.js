@@ -3,21 +3,28 @@ import { Button , FormGroup,
     Input,
     Table,
     Alert
-    } from 'reactstrap';
+} from 'reactstrap';
 
 import React,{useState , useEffect} from "react";
 import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "services/soporte/ticket.service";
-
+import ResourceService from "services/soporte/resource.service";
 
 function displayTicket(tck,url) {
+    var name = "Sin Asignar"
+    const NOTASSIGNED = "0";
 
+    if (tck.responsible != 0) {    
+        ResourceService.getResourceWithId(tck.responsible,function(resource,name) {
+            name = resource.name;
+        },name);
+    }    
     return (
         <tr>
             <td>{tck.ticketNumber}</td>
             <td>{tck.description}</td>
             <td>{tck.state}</td>
-            <td>{tck.responsible}</td>
+            <td>{name}</td>
             <td>{tck.deadLine}</td>
 
             <td className="text-right">
@@ -25,7 +32,7 @@ function displayTicket(tck,url) {
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to={`${url}${tck.ticketNumber}/edicion_ticket`}>
+                <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"></i>
                     </Button>{` `}
@@ -34,14 +41,18 @@ function displayTicket(tck,url) {
         </tr>
 
     )
+    
 } 
+
+
 
 export default function Tickets() {
     let {product,version} = useParams();
     let { path, url } = useRouteMatch();
 
-    const [tickets, setTickets] = useState(null);
+    const [tickets, setTickets] = useState([]);
     const [hidden, setHidden] = useState(true);
+    //const [resource, setResource] = useState(null);
 
     useEffect(() => {
         let handleResponse  = function (tcks) {
@@ -74,7 +85,7 @@ export default function Tickets() {
             <hr color="#4c4c4c"></hr>
 
             <div className="text-left">
-                <Link to={`${url}creacion_ticket`}>
+                <Link to={`${url}/creacion_ticket`}>
                     <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Ticket

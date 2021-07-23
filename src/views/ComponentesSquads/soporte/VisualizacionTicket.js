@@ -1,39 +1,34 @@
-import React from "react";
-
 import {
     FormGroup,
     Label,
     Input,
-    FormText,
     Button,
     Card,
     CardBody, Form
 } from "reactstrap";
 
+import React,{useEffect,useState} from "react";
 import {Link, useParams, useRouteMatch} from "react-router-dom";
-import TicketService from "../../../services/soporte/ticket.service";
-import ResourceService from "../../../services/soporte/resource.service";
+import TicketService from "services/soporte/ticket.service";
+import ResourceService from "services/soporte/resource.service";
 
 export default function VisualizacionTicket() {
 
-    const [ticket,setTicket] = React.useState(null);
-    const [resource, setResource] = React.useState(null);
+    const [ticket,setTicket] = useState([]);
+    const [resource, setResource] = useState([]);
 
     let {product,version,ticketId} = useParams();
     let { path, url } = useRouteMatch();
 
-    //Ver que para getear el resource necesito el ticket responsible que getea el ticketService,pero por alguna razon devuelve el ticket nulo
-    React.useEffect(() => {
+    useEffect(() => {
         TicketService.getTicketById(ticketId,function(res){
-            console.log(res)
             setTicket(res);
+            //Agregar condicion de resource id = 0
+            ResourceService.getResourceWithId(res.responsible,function(res){
+                setResource(res);
+            })
         })
 
-        //Esto no funciona,lo que se me ocurre es pasar el id del responsable directamente por URL y tomarlo de ahi
-        ResourceService.getResourceWithId(ticket.responsible,function(res){
-            console.log(res)
-            setResource(res);
-        })
     }, [ticketId]);
 
     if (!ticket || !resource) return null;
@@ -86,7 +81,7 @@ export default function VisualizacionTicket() {
                                 id="agente"
                                 required
                                 readOnly
-                                value={ticket.responsible}
+                                value={resource.name + " " + resource.surname}
                             />
                         </FormGroup>
                         <FormGroup>
