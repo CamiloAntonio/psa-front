@@ -1,7 +1,34 @@
-import React from 'react'
-import {Input, Button, Table, ButtonGroup} from 'reactstrap'
+import React, { useState } from 'react'
+import {Table} from 'reactstrap'
+import RecursosRow from './RecursosRow'
 
 export default function Recursos() {
+    const [resources, setResources] = useState([]);
+
+    function updateResources(data) {
+        setResources(_ => {
+            return data;
+        })
+    }
+
+    fetch("http://psa-resources-module.herokuapp.com/resource").then(
+        function(response) {
+            if (response.status !== 200) {
+                console.log("Error obteniendo los recursos");
+                return;
+            }
+
+            response.json().then(function(data) {
+                updateResources(data);
+            })
+        }
+    )
+    .catch(function(err) {
+        console.log("Error de Fetch");
+    });
+
+
+
     return (
         <div className="content">
             <h1>Recursos</h1>
@@ -14,22 +41,10 @@ export default function Recursos() {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Santiago</td>
-                    <td>Czop</td>
-                    
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Santiago</td>
-                    <td>Tadini</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Thiago</td>
-                    <td>Kovnat</td>
-                </tr>
+                {resources.map(data => {
+                    return <RecursosRow key={data.resourceID} data={data}/>;
+                    })
+                }
             </tbody>
         </Table>
         </div>
