@@ -10,11 +10,12 @@ import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "services/soporte/ticket.service";
 import ResourceService from "services/soporte/resource.service";
 
-function Row(props) {
-    let tck = props.ticket;
+
+
+function Responsible(props) {
     const [resourceName, setResourceName] = useState("SinAsignar");
 
-    let responsible = tck.responsible;
+    let responsible = props.id;
     let handleResponse  = function (resource) {
         setResourceName(resource.name + " " + resource.surname);
     }
@@ -23,19 +24,23 @@ function Row(props) {
         ResourceService.getResourceWithId(responsible,handleResponse);
     }
 
+    return <td>{resourceName}</td>
+}
+
+function displayRow(tck,url) {
     return (
         <tr>
             <td>{tck.ticketNumber}</td>
             <td>{tck.description}</td>
             <td>{tck.state}</td>
-            <td>{resourceName}</td>
+            <Responsible id={tck.responsible}></Responsible>
             <td>{tck.deadLine}</td>
             <td className="text-right">
                 <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to={`${props.url}/${tck.ticketNumber}/edicion_ticket`}>
+                <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"></i>
                     </Button>{` `}
@@ -108,7 +113,7 @@ export default function Tickets() {
                 </thead>
                 <tbody>
                     {   
-                        tickets.map(tck => <Row ticket={tck} url={url}/>)
+                        tickets.map(tck => displayRow(tck,url))
                     }
                 </tbody>
             </Table>}
