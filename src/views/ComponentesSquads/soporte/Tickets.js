@@ -18,8 +18,8 @@ function Responsible(props) {
         let handleResponse  = function (resource) {
             setResourceName(resource.name + " " + resource.surname);
         }
-        
-        if (responsible == "0") {
+
+        if (responsible === "0") {
             setResourceName("Sin Asignar");
         } else {
             ResourceService.getResourceWithId(responsible,handleResponse);
@@ -28,17 +28,22 @@ function Responsible(props) {
 
     if (!resourceName) return <td>cargando agente...</td>;
 
-    return <td>{resourceName}</td>;
+    return <td onClick={props.handleClick}>{resourceName}</td>
 }
 
 function displayRow(tck,url) {
+
+    const handleClick = () => {
+      window.location = `${url}/${tck.ticketNumber}`
+    };
+
     return (
         <tr>
-            <td>{tck.ticketNumber}</td>
-            <td>{tck.description}</td>
-            <td>{tck.state}</td>
-            <Responsible id={tck.responsible}></Responsible>
-            <td>{tck.deadLine}</td>
+            <td onClick={handleClick}>{tck.ticketNumber}</td>
+            <td onClick={handleClick}>{tck.title}</td>
+            <td onClick={handleClick}>{tck.state}</td>
+            <Responsible id={tck.responsible} handleClick={handleClick}/>
+            <td onClick={handleClick}>{tck.deadLine}</td>
             <td className="text-right">
                 <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
@@ -46,7 +51,7 @@ function displayRow(tck,url) {
                 </Button>{` `}
                 <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
-                        <i className="fa fa-edit"></i>
+                        <i className="fa fa-edit"/>
                     </Button>{` `}
                 </Link>
             </td>
@@ -117,7 +122,7 @@ export default function Tickets() {
                 </Button>
             </form>
 
-            <hr color="#4c4c4c"></hr>
+            <hr color="#4c4c4c"/>
 
             <div className="text-left">
                 <Link to={`${url}/creacion_ticket`}>

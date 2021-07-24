@@ -8,30 +8,36 @@ import {
 } from "reactstrap";
 
 import React,{useEffect,useState} from "react";
-import {Link, useParams, useRouteMatch} from "react-router-dom";
+import {Link, useParams, useRouteMatch, useHistory} from "react-router-dom";
 import TicketService from "services/soporte/ticket.service";
 import ResourceService from "services/soporte/resource.service";
 
 export default function VisualizacionTicket() {
 
     const [ticket,setTicket] = useState([]);
-    const [resource, setResource] = useState([]);
+    const [resource, setResource] = useState({resourceID:0,name:"Sin asignar",surname:""});
 
     let {product,version,ticketId} = useParams();
     let { path, url } = useRouteMatch();
+    let history = useHistory();
+
+    const goToPreviousPath = () => {
+        history.goBack()
+    }
 
     useEffect(() => {
         TicketService.getTicketById(ticketId,function(res){
             setTicket(res);
-            //Agregar condicion de resource id = 0
-            ResourceService.getResourceWithId(res.responsible,function(res){
-                setResource(res);
-            })
+            if (res.responsible !== "0") {
+                ResourceService.getResourceWithId(res.responsible,function(res){
+                    setResource(res);
+                })
+            }
         })
 
     }, [ticketId]);
 
-    if (!ticket || !resource) return null;
+    if (!ticket) return null;
 
     return (
          <div className="content">
@@ -63,7 +69,7 @@ export default function VisualizacionTicket() {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label for="cliente">Cliente *</Label>
+                            <Label for="cliente">Cliente </Label>
                             <Input
                                 type="text"
                                 name="textCliente"
@@ -85,7 +91,7 @@ export default function VisualizacionTicket() {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label for="estado">Estado *</Label>
+                            <Label for="estado">Estado </Label>
                             <Input
                                 type="text"
                                 name="textEstado"
@@ -96,7 +102,55 @@ export default function VisualizacionTicket() {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label for="descripcion">Descripción *</Label>
+                            <Label for="fechaDeCreacion">Fecha de creación</Label>
+                            <Input
+                                type="textarea"
+                                name="fechaDeCreacion"
+                                id="fechaDeCreacion"
+                                placeholder="Ingrese una descripcion para el ticket"
+                                required
+                                readOnly
+                                value={ticket.createdDate}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="fechaDeVencimiento">Fecha de vencimiento</Label>
+                            <Input
+                                type="textarea"
+                                name="fechaDeVencimiento"
+                                id="fechaDeVencimiento"
+                                placeholder="Ingrese una descripcion para el ticket"
+                                required
+                                readOnly
+                                value={ticket.deadLine}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="fechaDeUltModificacion">Fecha de última modificación</Label>
+                            <Input
+                                type="textarea"
+                                name="fechaDeUltModificacion"
+                                id="fechaDeUltModificacion"
+                                placeholder="Ingrese una descripcion para el ticket"
+                                required
+                                readOnly
+                                value={ticket.lastModifiedDate}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="tareasAsignadas">Tareas asignadas</Label>
+                            <Input
+                                type="textarea"
+                                name="tareasAsignadas"
+                                id="tareasAsignadas"
+                                placeholder="Ingrese una descripcion para el ticket"
+                                required
+                                readOnly
+                                value="ACA VAN LAS TAREAS ASOCIADAS"
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="descripcion">Descripción </Label>
                             <Input
                                 type="textarea"
                                 name="descripcion"
@@ -108,11 +162,9 @@ export default function VisualizacionTicket() {
                             />
                         </FormGroup>
                         <div className="text-right">
-                            <Link to="./tickets">
-                                    <Button color="info" size="sm">
-                                        Volver
-                                    </Button>
-                            </Link>
+                            <Button color="info" size="sm" onClick={goToPreviousPath}>
+                                Volver
+                            </Button>
                             <Link to={`${url}/edicion_ticket`}>
                                 <Button color="primary" size="sm">
                                     Editar

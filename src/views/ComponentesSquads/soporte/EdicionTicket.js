@@ -103,9 +103,9 @@ export default function EdicionTicket() {
                                 <Input type="select" name="severity" id="severidad" onChange={handleChange} required>
                                     {severidades.map((severidad) =>
                                         //desplegarSeveridades(severidad,ticket.severity)
-                                        createOption(severidad.nombre,(severidad, tktSeverity) => {
-                                            return (severidad == tktSeverity)
-                                        },severidad.nombre,ticket.state,severidad.info)
+                                        createOption(severidad.info,(severidad, tktSeverity) => {
+                                            return (severidad === tktSeverity)
+                                        },severidad.nombre,ticket.severity,severidad.nombre)
                                     )}
                                 </Input>
                             </FormGroup>
@@ -125,7 +125,7 @@ export default function EdicionTicket() {
                                 <Label for="agente">Agente</Label>
                                 <Input type="select" name="responsible" id="agente" onChange={handleChange}>
 
-                                    <option>Sin Asignar</option>
+                                    <option value={0}>Sin Asignar</option>
                                     {resources.map((resource) =>
                                         //desplegarAgentes(resource,ticket.responsible)
                                         createOption((resource.name + " " + resource.surname),(agenteId,tktResponsible) => {
@@ -142,7 +142,7 @@ export default function EdicionTicket() {
                                     {ESTADOS.map((state) =>
                                         //desplegarEstados(estado.nombre,ticket.state)
                                         createOption(state.nombre,(state,tktState) => {
-                                            return state == tktState
+                                            return state === tktState
                                         },state.nombre,ticket.state)
                                     )}
                                 </Input>

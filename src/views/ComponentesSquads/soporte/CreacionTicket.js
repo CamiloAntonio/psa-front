@@ -35,7 +35,7 @@ export default function CreacionTicket() {
         "lastModifiedDate": "",
         "linkedTasks": [],
         "product": product,
-        "responsible": "",
+        "responsible": "0",
         "severity": "",
         "state": "",
         "ticketNumber": -1,
@@ -54,23 +54,25 @@ export default function CreacionTicket() {
 
     const handleSubmit = e => {
         e.preventDefault();
+        console.log(newTicket);
         TicketService.createTicket(newTicket,function(res) {
             console.log(res);
         });
     };
 
     const [clients,setClients] = useState([]);
-    useEffect(() => {
-        let clients = ClientService.getClients();
-        console.log(clients)
-    },[setClients]);
-    
     const [resources, setResources] = useState([]);
+
     useEffect(() => {
         ResourceService.getResources(function(res){
             setResources(res);
         })
-    },[setResources]);
+
+        ClientService.getClients(function (res){
+            setClients(res);
+        })
+
+    },[setResources,setClients]);
 
     if (!clients || !resources) return null;
 
@@ -106,14 +108,14 @@ export default function CreacionTicket() {
                             <Input type="select" name="client" id="cliente" onChange={handleChange} required>
                                 <option value="" selected disabled hidden>Seleccione el cliente al que quiera asociar el ticket</option>
                                 {clients.map((client) =>
-                                    <option>hola{client.id}</option>
+                                    <option>{client.name}</option>
                                 )}
                             </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="agente">Agente</Label>
                             <Input type="select" name="responsible" onChange={handleChange} id="agente">
-                                <option value={-1}>Sin Asignar</option>
+                                <option value={0}>Sin Asignar</option>
                                 {resources.map((resource) =>
                                     <option value={resource.resourceID}>{resource.name + " " + resource.surname}</option>
                                 )}
