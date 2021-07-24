@@ -3,67 +3,118 @@ import { Button , FormGroup,
     Input,
     Table,
     Alert
-    } from 'reactstrap';
+} from 'reactstrap';
 
 import React,{useState , useEffect} from "react";
 import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "services/soporte/ticket.service";
+import ResourceService from "services/soporte/resource.service";
 
+function Responsible(props) {
+    const [resourceName, setResourceName] = useState(null);
 
-function displayTicket(tck,url) {
-    
+    useEffect(() => {
+        let responsible = props.id;
+        let handleResponse  = function (resource) {
+            setResourceName(resource.name + " " + resource.surname);
+        }
+
+        if (responsible === "0") {
+            setResourceName("Sin Asignar");
+        } else {
+            ResourceService.getResourceWithId(responsible,handleResponse);
+        }
+    }, []);
+
+    if (!resourceName) return <td>cargando agente...</td>;
+
+    return <td onClick={props.handleClick}>{resourceName}</td>
+}
+
+function displayRow(tck,url) {
+
+    const handleClick = () => {
+      window.location = `${url}/${tck.ticketNumber}`
+    };
+
     return (
         <tr>
-            <td>{tck.ticketNumber}</td>
-            <td>{tck.description}</td>
-            <td>{tck.state}</td>
-            <td>{tck.responsible}</td>
-            <td>{tck.deadLine}</td>
-
+            <td onClick={handleClick}>{tck.ticketNumber}</td>
+            <td onClick={handleClick}>{tck.title}</td>
+            <td onClick={handleClick}>{tck.state}</td>
+            <Responsible id={tck.responsible} handleClick={handleClick}/>
+            <td onClick={handleClick}>{tck.deadLine}</td>
             <td className="text-right">
                 <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to={`${url}/edicion_ticket`}>
+                <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
-                        <i className="fa fa-edit"></i>
+                        <i className="fa fa-edit"/>
                     </Button>{` `}
                 </Link>
             </td>
         </tr>
-
     )
-} 
+}
 
 export default function Tickets() {
     let {product,version} = useParams();
     let { path, url } = useRouteMatch();
-    
+
     const [tickets, setTickets] = useState(null);
-    const [hidden, setHidden] = useState(true);
-    
-    useEffect(() => {
+    const [noResults, setNoResult] = useState(true);
+    const [nroTicket, setNroTicket] = useState(-1);
+
+    const handleChange = e => {
+        const {name, value} = e.target;
+        setNroTicket(value);
+    };
+
+    const handleSubmit = e => {
+        e.preventDefault();
+
+        if(nroTicket > 0) {
+            TicketService.getTicketById(nroTicket,function(res) {
+                if(Object.keys(res).length === 0) {
+                    setNoResult(true);
+                } else {
+                    setTickets([res]);
+                    setNoResult(false);
+                }
+            });
+        } else {
+            fetchAllTickets(product,version);
+        }
+    };
+
+    function fetchAllTickets(product,version) {
         let handleResponse  = function (tcks) {
             setTickets(tcks);
-            setHidden((tcks.length > 0));
+            setNoResult((tcks.length <= 0));
         }
 
         TicketService.getTicketByProductAndVersion(product,version,handleResponse)
+    }
+
+    useEffect(() => {
+        fetchAllTickets(product,version);
     }, [product,version]);
-  
-    if (!tickets) return null;
+
+    if (!tickets) return <h2>cargando tickets...</h2>;
 
     return (
         <div className="content">
             <h1>Tickets - {product} - Version: {version} </h1>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
                     <Input
                     type="number"
                     name="numeroTicket"
                     id="exampleEmail"
+                    onChange={handleChange}
                     />
                 </FormGroup>
                 <Button color="info" size="sm" type="submit">
@@ -71,7 +122,7 @@ export default function Tickets() {
                 </Button>
             </form>
 
-            <hr color="#4c4c4c"></hr>
+            <hr color="#4c4c4c"/>
 
             <div className="text-left">
                 <Link to={`${url}/creacion_ticket`}>
@@ -82,9 +133,9 @@ export default function Tickets() {
                 </Link>
             </div>
 
-            {!hidden && <Alert color="default">No hay tickets asociados</Alert>}
+            {noResults && <Alert color="default">No hay tickets asociados</Alert>}
 
-            {hidden && <Table>
+            {!noResults && <Table>
                 <thead>
                     <tr>
                         <th>Nro Ticket</th>
@@ -96,7 +147,7 @@ export default function Tickets() {
                 </thead>
                 <tbody>
                     {   
-                        tickets.map(tck => displayTicket(tck,url))
+                      tickets.map(tck => displayRow(tck,url))
                     }
                 </tbody>
             </Table>}

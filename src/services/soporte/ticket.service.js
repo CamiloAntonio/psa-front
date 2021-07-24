@@ -25,19 +25,15 @@ class TicketService {
     }
 
     updateTicket(tkt){
-    return axios.put(API_URL + "tickets/" + tkt.id, {
+    axios.put(API_URL + "tickets/" + tkt.ticketNumber, {
         "title" : tkt.title,
         "client" : tkt.client,
         "responsible" : tkt.responsible,
         "severity" : tkt.severity,
         "state" : tkt.state,
         "description" : tkt.description,
-    },
-    {
-        headers: {}
     });
   }
-
 }
 
 export default new TicketService();
