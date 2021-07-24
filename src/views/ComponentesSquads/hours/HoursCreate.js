@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Input, Button, Table, ButtonGroup} from 'reactstrap'
 
-export default function Recursos() {
+export default function HoursCreate() {
+    //const [horas, setHoras] = useState([]);
+
     return (
-        <div className="content">
+        /*<div className="content">
             <h1>Carga de Horas</h1>
             <h3>Proyecto PSA - Tarea Programar Front End</h3>
             <div>Ingrese la cantidad de horas trabajadas</div>
@@ -56,6 +58,7 @@ export default function Recursos() {
                     </tr>
                 </tbody>
             </Table>
-        </div>
+        </div>*/
+        <div className="content">1</div>
     )
 }
