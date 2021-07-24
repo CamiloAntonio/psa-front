@@ -10,21 +10,25 @@ import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "services/soporte/ticket.service";
 import ResourceService from "services/soporte/resource.service";
 
-
-
 function Responsible(props) {
-    const [resourceName, setResourceName] = useState("SinAsignar");
+    const [resourceName, setResourceName] = useState(null);
 
-    let responsible = props.id;
-    let handleResponse  = function (resource) {
-        setResourceName(resource.name + " " + resource.surname);
-    }
-    
-    if(parseInt(responsible) !== 0 && responsible !== "") {
-        ResourceService.getResourceWithId(responsible,handleResponse);
-    }
+    useEffect(() => {
+        let responsible = props.id;
+        let handleResponse  = function (resource) {
+            setResourceName(resource.name + " " + resource.surname);
+        }
+        
+        if (responsible == "0") {
+            setResourceName("Sin Asignar");
+        } else {
+            ResourceService.getResourceWithId(responsible,handleResponse);
+        }
+    }, []);
 
-    return <td>{resourceName}</td>
+    if (!resourceName) return <td>cargando agente...</td>;
+
+    return <td>{resourceName}</td>;
 }
 
 function displayRow(tck,url) {
@@ -48,39 +52,64 @@ function displayRow(tck,url) {
             </td>
         </tr>
     )
-} 
-
-
+}
 
 export default function Tickets() {
     let {product,version} = useParams();
     let { path, url } = useRouteMatch();
 
-    const [tickets, setTickets] = useState([]);
-    const [hidden, setHidden] = useState(true);
+    const [tickets, setTickets] = useState(null);
+    const [noResults, setNoResult] = useState(true);
+    const [nroTicket, setNroTicket] = useState(-1);
 
-    useEffect(() => {
+    const handleChange = e => {
+        const {name, value} = e.target;
+        setNroTicket(value);
+    };
+
+    const handleSubmit = e => {
+        e.preventDefault();
+
+        if(nroTicket > 0) {
+            TicketService.getTicketById(nroTicket,function(res) {
+                if(Object.keys(res).length === 0) {
+                    setNoResult(true);
+                } else {
+                    setTickets([res]);
+                    setNoResult(false);
+                }
+            });
+        } else {
+            fetchAllTickets(product,version);
+        }
+    };
+
+    function fetchAllTickets(product,version) {
         let handleResponse  = function (tcks) {
             setTickets(tcks);
-            setHidden((tcks.length > 0));
+            setNoResult((tcks.length <= 0));
         }
 
         TicketService.getTicketByProductAndVersion(product,version,handleResponse)
+    }
+
+    useEffect(() => {
+        fetchAllTickets(product,version);
     }, [product,version]);
 
-  
-    if (!tickets) return null;
+    if (!tickets) return <h2>cargando tickets...</h2>;
 
     return (
         <div className="content">
             <h1>Tickets - {product} - Version: {version} </h1>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
                     <Input
                     type="number"
                     name="numeroTicket"
                     id="exampleEmail"
+                    onChange={handleChange}
                     />
                 </FormGroup>
                 <Button color="info" size="sm" type="submit">
@@ -99,9 +128,9 @@ export default function Tickets() {
                 </Link>
             </div>
 
-            {!hidden && <Alert color="default">No hay tickets asociados</Alert>}
+            {noResults && <Alert color="default">No hay tickets asociados</Alert>}
 
-            {hidden && <Table>
+            {!noResults && <Table>
                 <thead>
                     <tr>
                         <th>Nro Ticket</th>
@@ -113,7 +142,7 @@ export default function Tickets() {
                 </thead>
                 <tbody>
                     {   
-                        tickets.map(tck => displayRow(tck,url))
+                      tickets.map(tck => displayRow(tck,url))
                     }
                 </tbody>
             </Table>}
