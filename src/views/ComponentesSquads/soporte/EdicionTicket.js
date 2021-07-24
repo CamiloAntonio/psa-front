@@ -5,7 +5,7 @@ import {
     Input,
     Button,
     Card,
-    CardBody
+    CardBody, Alert
 } from "reactstrap";
 
 import React from "react";
@@ -64,8 +64,18 @@ export default function EdicionTicket() {
         TicketService.updateTicket(ticket);
     };
 
+    const handleDeleteClick = e => {
+        e.preventDefault();
+        console.log(ticket.ticketNumber);
+        TicketService.deleteTicketById(ticket.ticketNumber,function (res) {
+            console.log(res);
+            setDeleteMessage(res);
+        });
+    };
+
     const [ticket,setTicket] = React.useState([]);
     const [resources, setResources] = React.useState([]);
+    const [deleteMessage, setDeleteMessage] = React.useState([])
 
     React.useEffect(() => {
         TicketService.getTicketById(ticketId,function(res){
@@ -163,7 +173,7 @@ export default function EdicionTicket() {
                                 <Button color="info" size="sm" onClick={goToPreviousPath}>
                                     Volver
                                 </Button>
-                                <Button color="danger" size="sm">
+                                <Button color="danger" size="sm" onClick={handleDeleteClick}>
                                     Eliminar
                                 </Button>
                                 <Button color="primary" type="submit"  size="sm">
