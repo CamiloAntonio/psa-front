@@ -87,7 +87,7 @@ export default function Tareas() {
                             </Link>
                               </td>}
                             <td>{tarea.description}</td>
-                            {tarea.assigned_worker ? <td>{tarea.assigned_worker.Nombre} {tarea.assigned_worker.Apellido}</td> : <td>No asignada</td>}
+                            {tarea.persona_asignada ? <td>{tarea.persona_asignada.name} {tarea.persona_asignada.surname}</td> : <td>No asignada</td>}
                             <td>{tarea.fecha_inicio}</td>
                             <td className="text-right">
                                 <Link to={`hours/create/${tarea.id}`}>
