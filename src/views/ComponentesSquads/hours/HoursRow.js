@@ -44,7 +44,6 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
                                 <Link to={`edit/${id}/`}><Button color="secondary" size="sm">Modificar</Button></Link>
                             </ButtonGroup>
             </td>
-            <Link to={"/admin/hours/create"}>Link</Link>
         </tr>
     )
 }
