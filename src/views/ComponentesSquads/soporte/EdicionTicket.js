@@ -5,7 +5,11 @@ import {
     Input,
     Button,
     Card,
-    CardBody, Alert
+    CardBody,
+    Modal, 
+    ModalHeader, 
+    ModalBody,
+    ModalFooter
 } from "reactstrap";
 
 import React from "react";
@@ -15,26 +19,47 @@ import ResourceService from "services/soporte/resource.service";
 import {useParams,useHistory} from "react-router-dom";
 import {ESTADOS} from "./estados"
 
-
-//function desplegarSeveridades (severidad, tktSeverity) {
-//    if (severidad.nombre !== tktSeverity) return <option value={severidad.nombre}>{severidad.info}</option>
-//    else return <option value={severidad.nombre} selected>{severidad.info}</option>
-//}
-
-//function desplegarEstados (estado, tktState) {
-//    if (estado !== tktState) return <option>{estado}</option>
-//    else return <option selected>{estado}</option>
-//}
-
-//function desplegarAgentes (agente, tktResponsible) {
-//    if (agente.resourceID !== parseInt(tktResponsible,10)) return <option value={agente.resourceID}>{agente.name + " " + agente.surname}</option>
-//    else return <option value={agente.resourceID} selected>{agente.name + " " + agente.surname}</option>
-//}
-
-
 function createOption(text,fcmp,param1,param2,value=null) {
     return React.createElement('option',{value:value,selected:fcmp(param1,param2)},text);
 }
+
+
+const ConfirmationModal = (props) => {
+    const {
+      buttonLabel,
+      className,
+      ticketNumber
+    } = props;
+  
+    const [modal, setModal] = React.useState(false);
+  
+    const toggle = () => setModal(!modal);
+
+    const handleDeleteClick = e => {
+        e.preventDefault();
+        console.log(ticketNumber);
+        TicketService.deleteTicketById(ticketNumber,function (res) {
+            console.log(res);
+            //setDeleteMessage(res);
+        });
+    };
+  
+    return (
+      <div>
+        <Button color="danger" onClick={toggle} size="sm">{buttonLabel}</Button>
+        <Modal isOpen={modal} toggle={toggle} className={className}>
+          <ModalHeader toggle={toggle}>Eliminar Ticket</ModalHeader>
+          <ModalBody>
+            Usted desea eliminar el ticket?
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={handleDeleteClick}>Eliminar</Button>{' '}
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  }
 
 export default function EdicionTicket() {
     let {product,version,ticketId} = useParams();
@@ -64,14 +89,7 @@ export default function EdicionTicket() {
         TicketService.updateTicket(ticket);
     };
 
-    const handleDeleteClick = e => {
-        e.preventDefault();
-        console.log(ticket.ticketNumber);
-        TicketService.deleteTicketById(ticket.ticketNumber,function (res) {
-            console.log(res);
-            setDeleteMessage(res);
-        });
-    };
+    
 
     const [ticket,setTicket] = React.useState([]);
     const [resources, setResources] = React.useState([]);
@@ -112,7 +130,6 @@ export default function EdicionTicket() {
                                 <Label for="severidad">Severidad *</Label>
                                 <Input type="select" name="severity" id="severidad" onChange={handleChange} required>
                                     {severidades.map((severidad) =>
-                                        //desplegarSeveridades(severidad,ticket.severity)
                                         createOption(severidad.info,(severidad, tktSeverity) => {
                                             return (severidad === tktSeverity)
                                         },severidad.nombre,ticket.severity,severidad.nombre)
@@ -137,7 +154,6 @@ export default function EdicionTicket() {
 
                                     <option value={0}>Sin Asignar</option>
                                     {resources.map((resource) =>
-                                        //desplegarAgentes(resource,ticket.responsible)
                                         createOption((resource.name + " " + resource.surname),(agenteId,tktResponsible) => {
                                             return (agenteId === parseInt(tktResponsible,10))
                                         },resource.resourceID,ticket.responsible,resource.resourceID)
@@ -148,9 +164,7 @@ export default function EdicionTicket() {
                             <FormGroup>
                                 <Label for="estado">Estado *</Label>
                                 <Input type="select" name="state" id="estado" onChange={handleChange}>
-                                    {/*<option value="" selected disabled hidden>Seleccione el estado del ticket</option>*/}
                                     {ESTADOS.map((state) =>
-                                        //desplegarEstados(estado.nombre,ticket.state)
                                         createOption(state.nombre,(state,tktState) => {
                                             return state === tktState
                                         },state.nombre,ticket.state)
@@ -170,12 +184,13 @@ export default function EdicionTicket() {
                                 />
                             </FormGroup>
                             <div className="text-right">
+                                <ConfirmationModal buttonLabel="Eliminar" ticketNumber={ticket.ticketNumber}/>
                                 <Button color="info" size="sm" onClick={goToPreviousPath}>
                                     Volver
                                 </Button>
-                                <Button color="danger" size="sm" onClick={handleDeleteClick}>
+                                {/*<Button color="danger" size="sm" onClick={handleDeleteClick}>
                                     Eliminar
-                                </Button>
+                                    </Button>*/}
                                 <Button color="primary" type="submit"  size="sm">
                                     Confirmar cambios
                                 </Button>

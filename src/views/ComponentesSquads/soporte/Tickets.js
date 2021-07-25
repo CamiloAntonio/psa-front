@@ -65,6 +65,7 @@ export default function Tickets() {
 
     const [tickets, setTickets] = useState(null);
     const [noResults, setNoResult] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [nroTicket, setNroTicket] = useState(-1);
 
     const handleChange = e => {
@@ -76,33 +77,56 @@ export default function Tickets() {
         e.preventDefault();
 
         if(nroTicket > 0) {
-            TicketService.getTicketById(nroTicket,function(res) {
-                if(Object.keys(res).length === 0) {
-                    setNoResult(true);
-                } else {
-                    setTickets([res]);
-                    setNoResult(false);
-                }
-            });
+            fetchTicketById(nroTicket);
         } else {
             fetchAllTickets(product,version);
         }
     };
 
+    function playAnimation() {
+        setLoading(true);
+
+    }
+
+    function stopAnimation() {
+         setLoading(false);
+    }
+
+    function fetchTicketById(id) {
+        playAnimation();        
+
+        let handleError = (error) => {
+            console.log(error);
+            setNoResult(true);
+            stopAnimation();
+        }
+
+        let handleSuccess = (res) => {
+            setTickets([res]);
+            setNoResult(false);
+            stopAnimation();
+        }
+
+        TicketService.getTicketById(nroTicket,handleSuccess,handleError);
+    }
+
     function fetchAllTickets(product,version) {
+        playAnimation();
         let handleResponse  = function (tcks) {
             setTickets(tcks);
             setNoResult((tcks.length <= 0));
+            stopAnimation();
         }
 
         TicketService.getTicketByProductAndVersion(product,version,handleResponse)
     }
 
     useEffect(() => {
-        fetchAllTickets(product,version);
+        setTimeout(() => {
+            fetchAllTickets(product,version);
+        }, 1000)
     }, [product,version]);
 
-    if (!tickets) return <h2>cargando tickets...</h2>;
 
     return (
         <div className="content">
@@ -133,9 +157,34 @@ export default function Tickets() {
                 </Link>
             </div>
 
-            {noResults && <Alert color="default">No hay tickets asociados</Alert>}
+            {loading && 
+                //loading page
+                <div className="content">
+                    <style> 
+                        {"\
+                        .loader {\
+                            border: 16px solid #f3f3f3;\
+                            border-radius: 50%;\
+                            border-top: 16px solid #3498db;\
+                            width: 120px;\
+                            height: 120px;\
+                            -webkit-animation: spin 2s linear infinite; /* Safari */\
+                            animation: spin 2s linear infinite;\
+                        }\
+                        "}
+                    
+                        {"\ @keyframes spin {\
+                                0% { transform: rotate(0deg); }\
+                                100% { transform: rotate(360deg); }\
+                            }\
+                            "}
+                    </style>
+                    <div class="loader"></div>
+                </div>}
 
-            {!noResults && <Table>
+            {noResults && !loading && <Alert color="default">No hay tickets asociados</Alert>}
+
+            {!noResults && !loading &&<Table hover>
                 <thead>
                     <tr>
                         <th>Nro Ticket</th>

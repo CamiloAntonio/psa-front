@@ -14,9 +14,10 @@ class TicketService {
         then (res => {return callback(res.data)});
     }
 
-    getTicketById(id, callback) {
-        axios.get(API_URL + "tickets/" + id).
-        then (res => {return callback(res.data)});
+    getTicketById(id, successCallback,errorCallback) {
+        axios.get(API_URL + "tickets/" + id)
+        .then (res => {return successCallback(res.data)})
+        .catch(error => { return errorCallback(error)});
     }
 
     createTicket(ticket, callback) {
