@@ -57,10 +57,13 @@ export default function HoursEdit() {
             <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label>Ingrese la cantidad de horas trabajadas</Label>
-                    <Input name="quantity" placeHolder="Horas" type="number" min={0} max={24} onChange={handleChange} value={hour.quantity} required></Input>   
+                    <Input name="quantity" placeHolder="Horas" type="number" min={1} max={24} onChange={handleChange} value={hour.quantity} required></Input>   
                 </FormGroup>    
-                <Button color="secondary" size="sm" onClick={goToPreviousPath}>Cancelar</Button>
-                <Button color="primary" type="submit" size="sm">Guardar</Button> 
+                
+                <div className="text-right">
+                    <Button color="secondary" size="sm" onClick={goToPreviousPath}>Cancelar</Button>
+                    <Button color="primary" type="submit" size="sm">Guardar cambios</Button> 
+                </div>
             </form>
 
         </div>
