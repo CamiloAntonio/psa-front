@@ -41,7 +41,7 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
             <td className="text-right">
                             <ButtonGroup>
                                 <Button color="secondary" size="sm" onClick={function() {deleteHours(id)}}>Eliminar</Button>
-                                <Link to={"/admin/hours/create"}><Button color="secondary" size="sm">Modificar</Button></Link>
+                                <Link to={`edit/${id}/`}><Button color="secondary" size="sm">Modificar</Button></Link>
                             </ButtonGroup>
             </td>
             <Link to={"/admin/hours/create"}>Link</Link>
