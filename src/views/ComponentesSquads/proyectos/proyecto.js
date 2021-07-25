@@ -84,7 +84,6 @@ export default function Proyecto({match}) {
     }
   
     function handleChangeFecha(e) {
-      // console.log(e)
       let newFechas = {...fechas}
       newFechas[e.name] = e.fecha
       setFechas(newFechas)
@@ -167,7 +166,6 @@ export default function Proyecto({match}) {
                              <option key={3} value="Terminado">Terminado</option>
 
               </Input>
-
             </FormGroup>
         </Col>
         <Col className="px-md-1" md="2">

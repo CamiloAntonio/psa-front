@@ -42,15 +42,35 @@ export default function CrearTarea({match}) {
   const [resources, setResources] = useState(sampleLeaders)
   const [projects, setProjects] = useState([])
   const [tickets, setTickets] = useState([])
-
-  const [fechas, setFechas] = useState({fecha_estimada_fin: new Date(), fecha_limite_inicio: new Date(), fecha_inicio: new Date()})
+  const [fechas, setFechas] = useState({fecha_inicio: new Date(), fecha_fin: undefined})
 
   useEffect(() => {
+    projectService.getTickets()
+    .then(res => res.json())
+    .then(
+      (result) => {
+        setTickets(result)
+        console.log(result)
+      },
+      (error) => {
+        console.log("hubo error bro")
+      }
+    )
     projectService.getTaskById(match.params.id)
       .then(res => res.json())
       .then(
         (result) => {
             setTaskDetails(result)
+            let newFechas = {...fechas}
+            // for (i in fechas) {
+            //     if(result[i].length>0) newFechas[i] = new Date(result[i])
+            // }    
+
+            newFechas.fecha_inicio = new Date(result.fecha_inicio)
+            if(result.fecha_fin.length>0) newFechas.fecha_fin = new Date(result.fecha_fin)
+
+            console.log("fechas trnasformadas", newFechas)
+            setFechas(newFechas)
           console.log(result)
         },
         (error) => {
@@ -137,28 +157,20 @@ export default function CrearTarea({match}) {
     )
   }
 
-//   function handleChangeFecha(e) {
-//     console.log(e)
-//     let newFechas = {...fechas}
-//     newFechas[e.name] = e.fecha
-//     setFechas(newFechas)
-//     let newProjectDetails = { ...projectDetails }
-//     newProjectDetails[e.name] = e.fecha.toLocaleDateString()
-//     setProjectDetails(newProjectDetails)
-//   }
-
-  //   this.setState(
-  //     {
-  //       horarios: horariosDisponibles
-  //     });
-
-  //   }
+  function handleChangeFecha(e) {
+    let newFechas = {...fechas}
+    newFechas[e.name] = e.fecha
+    setFechas(newFechas)
+    let newTaskDetails = { ...taskDetails }
+    newTaskDetails[e.name] = e.fecha.toLocaleDateString()
+    setTaskDetails(newTaskDetails)
+  }
 
   return (
     <div className="content">
       <h1>{taskDetails.nombre}</h1>
       <Row>
-        <Col className="px-md-1" md="4">
+        <Col className="px-md-1" md="3">
           <FormGroup>
             <label>Nombre</label>
             <Input
@@ -183,11 +195,10 @@ export default function CrearTarea({match}) {
                 </FormGroup>
             </Col> */}
 
-        <Col className="pl-md-1" md="4">
+        <Col className="pl-md-1" md="3">
           <FormGroup>
             <label>Proyecto al que pertenece</label>
-            <Input  type="select" name="selectProjects" id="project" required onChange={handleSelectProject}>
-                            <option>-</option>
+            <Input value={taskDetails.id_proyecto_asociado}  type="select" name="selectProjects" id="project" required onChange={handleSelectProject}>
                             {projects.map((project) =>
                                 <option value={project.id} key={project.id}>{project.nombre}</option>
 
@@ -196,17 +207,29 @@ export default function CrearTarea({match}) {
           </FormGroup>
         </Col>
 
-            <Col className="pl-md-1" md="4">
+            <Col className="pl-md-1" md="3">
              <FormGroup>
-               <label>Lider de Equipo</label>
-               <Input value={taskDetails.persona_asignada.id} type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsignada}>
-                               {resources.map((resource) =>
+               <label>Persona asignada</label>
+               <Input value={taskDetails.persona_asignada.resourceID} type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsignada}>
+                                {/* <option value={taskDetails.persona_asignada.resourceID} key={taskDetails.persona_asignada.resourceID}>{taskDetails.persona_asignada.name} {taskDetails.persona_asignada.surname}</option> */}
+                               
+                                {resources.map((resource) =>
                                    <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
-                               )}
+                                )}
                </Input>
              </FormGroup>
            </Col>
-      
+           <Col className="px-md-1" md="3">
+            <FormGroup>
+              <label>Estado</label>
+              <Input value={taskDetails.estado} type="select" name="estado" id="estado" required onChange={handleEditTaskDetails}>
+                             <option key={1} value="Iniciado">Iniciado</option>
+                             <option key={2} value="No Iniciado">No Iniciado</option>
+                             <option key={3} value="Terminado">Terminado</option>
+
+              </Input>
+            </FormGroup>
+        </Col>
 
         
           
@@ -236,16 +259,31 @@ export default function CrearTarea({match}) {
         </Row>
 
         <Row>
-        <Col className="pl-md-1" md="4">
-          <FormGroup>
-            <label>Ticket al que pertenece</label>
-            <Input  type="select" name="selectProjects" id="project" required onChange={handleSelectTicket}>
-                            <option>-</option>
-                            {tickets.map((ticket) => 
-                                <option value={ticket.ticketNumber} id={ticket.ticketNumber} key={ticket.ticketNumber}>{ticket.title}</option>
-                            )}
-            </Input>
-          </FormGroup>
+            <Col className="pl-md-1" md="4">
+            <FormGroup>
+                <label>Ticket a los que pertenece</label>
+                <Input  type="select" name="selectProjects" id="project" required onChange={handleSelectTicket}>
+                                <option>-</option>
+                                {tickets.map((ticket) => 
+                                    <option value={ticket.ticketNumber} id={ticket.ticketNumber} key={ticket.ticketNumber}>{ticket.title}</option>
+                                )}
+                </Input>
+                {taskDetails.tickets.map(ticket => (<li key={ticket.ticketNumber}>{ticket.title}</li>)) }
+
+            </FormGroup>
+            </Col>
+            <Col className="pl-md-1" md="2">
+          <div>
+            <label>Fecha Inicio</label>
+          </div>
+          <DatePicker value={fechas.fecha_inicio} name="fecha_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_inicio"})}/>
+        </Col>
+                             
+        <Col className="pl-md-1" md="2">
+          <div>
+            <label>Fecha Fin</label>
+          </div>
+          <DatePicker value={fechas.fecha_fin} name="fecha_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_fin"})}/>
         </Col>
         </Row>
 
@@ -253,20 +291,3 @@ export default function CrearTarea({match}) {
     </div>
   )
 }
-
-// {
-//     "persona_asignada": {
-//       "resourceID": 0,
-//       "name": "string",
-//       "surname": "string"
-//     },
-//     "fecha_inicio": "string",
-//     "tickets": [
-//       {
-//         "ticketNumber": 0,
-//         "title": "string"
-//       }
-//     ],
-//     "estado": "No Iniciado",
-//     "fecha_fin": ""
-//   }
