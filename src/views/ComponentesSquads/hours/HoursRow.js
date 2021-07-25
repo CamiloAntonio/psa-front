@@ -39,10 +39,10 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
             <td>{quantity}</td>
             <td>{date.split("T")[0]}</td>
             <td className="text-right">
-                            <ButtonGroup>
-                                <Button color="secondary" size="sm" onClick={function() {deleteHours(id)}}>Eliminar</Button>
-                                <Link to={`edit/${id}/`}><Button color="secondary" size="sm">Modificar</Button></Link>
-                            </ButtonGroup>
+                                <Button color="danger" size="sm" onClick={function() {deleteHours(id)}}>Eliminar</Button>{' '}
+                                <Link to={`edit/${id}/`}><Button className="btn-icon" color="info" size="sm">
+                        <i className="fa fa-edit"/>
+                    </Button></Link>
             </td>
         </tr>
     )
