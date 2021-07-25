@@ -48,7 +48,6 @@ export default function Proyectos() {
       <Table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Lider de equipo</th>
             <th>Fecha Inicio</th>
@@ -56,6 +55,8 @@ export default function Proyectos() {
             <th>Fecha Estimada Fin</th>
             <th>Fecha Fin</th>
             <th>Estado</th>
+            <th>Porcentaje de avance</th>
+
 
 
 
@@ -64,17 +65,17 @@ export default function Proyectos() {
         {proyectos && proyectos.map(proyecto => (
           <tbody>
             <tr>
-
-              <th scope="row">{proyecto.id}</th>
               <Link to={`proyecto/${proyecto.id}`} style={{ 'color': 'inherit' }}>
                 <td>{proyecto.nombre}</td>
               </Link>
-              <td>{proyecto.lider_de_equipo.Nombre} {proyecto.lider_de_equipo.Apellido}</td>
+              <td>{proyecto.lider_de_equipo.name} {proyecto.lider_de_equipo.surname}</td>
               <td>{proyecto.fecha_inicio}</td>
               <td>{proyecto.fecha_limite_inicio}</td>
               <td>{proyecto.fecha_estimada_fin}</td>
               <td>{proyecto.fecha_fin}</td>
               <td>{proyecto.estado}</td>
+              <td>{proyecto.porcentaje_de_avance}</td>
+
 
 
 

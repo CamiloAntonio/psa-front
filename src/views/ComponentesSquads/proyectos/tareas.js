@@ -65,8 +65,8 @@ export default function Tareas() {
             <Table>
                 <thead>
                     <tr>
-                        <th>Proyecto</th>
                         <th>Nombre</th>
+                        <th>Proyecto</th>
                         <th>Descripcion</th>
                         <th>Persona Asignada</th>
                         <th>Fecha Inicio</th>
@@ -75,8 +75,17 @@ export default function Tareas() {
                 {tareas.map(tarea => (
                     <tbody>
                         <tr>
-                            {proyectos && tarea && <th scope="row">{proyectos.filter(p => p.id == tarea.id_proyecto_asociado)[0] && proyectos.filter(p => p.id == tarea.id_proyecto_asociado)[0].nombre}</th>}
-                            <td>{tarea.nombre}</td>
+                            <td>
+                            <Link to={`tarea/${tarea.id}`} style={{ 'color': 'inherit' }}>
+                              {tarea.nombre}
+                            </Link>
+                            </td>
+                            {proyectos && tarea &&
+                              <td scope="row">
+                            <Link to={`proyecto/${tarea.id_proyecto_asociado}`} style={{ 'color': 'inherit' }}>
+                                {proyectos.filter(p => p.id == tarea.id_proyecto_asociado)[0] && proyectos.filter(p => p.id == tarea.id_proyecto_asociado)[0].nombre}
+                            </Link>
+                              </td>}
                             <td>{tarea.description}</td>
                             {tarea.assigned_worker ? <td>{tarea.assigned_worker.Nombre} {tarea.assigned_worker.Apellido}</td> : <td>No asignada</td>}
                             <td>{tarea.fecha_inicio}</td>

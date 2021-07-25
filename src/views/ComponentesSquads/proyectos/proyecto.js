@@ -37,13 +37,14 @@ const sampleProj = {
     "estado": "No Iniciado",
     "porcentaje_de_avance": 0,
     "fecha_fin": "",
-    "id": 0
+    "id": 0,
+    "tareas": []
   }
 
 export default function Proyecto({match}) {
     const [projectDetails, setProjectDetails] = useState(sampleProj)
     const [resources, setResources] = useState([])
-    const [fechas, setFechas] = useState({fecha_estimada_fin: new Date(), fecha_limite_inicio: new Date(), fecha_inicio: new Date()})
+    const [fechas, setFechas] = useState({fecha_estimada_fin: new Date(), fecha_limite_inicio: new Date(), fecha_inicio: new Date(), fecha_fin: undefined})
 
 
     function handleEditProjectDetails(e) {
@@ -56,7 +57,6 @@ export default function Proyecto({match}) {
     function handleSelectTeamLeader(e) {
       // console.log(e.target.value )
       let newProjectDetails = { ...projectDetails }
-      
       newProjectDetails.lider_de_equipo = resources.filter(r => r.resourceID == e.target.value)[0]
       setProjectDetails(newProjectDetails)
     }
@@ -71,10 +71,10 @@ export default function Proyecto({match}) {
       setProjectDetails(newProjectDetails)
     }
   
-    function submitCreateProject() {
-      projectService.postProject(projectDetails).then(res => res.json()).then(
+    function submitUpdateProject() {
+      projectService.updateProject(projectDetails).then(res => res.json()).then(
         (result) => {
-          // console.log(result)
+          console.log(result)
           window.location.replace("/admin/proyectos");
         },
         (error) => {
@@ -93,7 +93,6 @@ export default function Proyecto({match}) {
       setProjectDetails(newProjectDetails)
     }
 
-
     useEffect(() => {
         projectService.getProjectById(match.params.id)
             .then(res => res.json())
@@ -105,6 +104,8 @@ export default function Proyecto({match}) {
                     newFechas.fecha_estimada_fin = new Date(result.fecha_estimada_fin)
                     newFechas.fecha_limite_inicio = new Date(result.fecha_limite_inicio)
                     newFechas.fecha_inicio = new Date(result.fecha_inicio)
+                    if(result.fecha_fin.length>0) newFechas.fecha_fin = new Date(result.fecha_fin)
+
                     console.log("fechas trnasformadas", newFechas)
                     setFechas(newFechas)
 
@@ -157,17 +158,34 @@ export default function Proyecto({match}) {
           </FormGroup>
         </Col>
 
-        <Col className="pl-md-1" md="4">
+        <Col className="px-md-1" md="2">
+            <FormGroup>
+              <label>Estado</label>
+              <Input value={projectDetails.estado} type="select" name="estado" id="estado" required onChange={handleEditProjectDetails}>
+                             <option key={1} value="Iniciado">Iniciado</option>
+                             <option key={2} value="No Iniciado">No Iniciado</option>
+                             <option key={3} value="Terminado">Terminado</option>
+
+              </Input>
+
+            </FormGroup>
+        </Col>
+        <Col className="px-md-1" md="2">
           <FormGroup>
-            <label>Personas asignadas</label>
-            <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
-                            { (<option value="nulo">-</option>)}
-                            {resources.map((resource) =>
-                                <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
-                            )}
-            </Input>
+            <label>Porcentaje de avance</label>
+            <Input
+              value={projectDetails.porcentaje_de_avance}
+              name="porcentaje_de_avance"
+              onChange={handleEditProjectDetails}
+              placeholder="Avance"
+              type="number"
+            />
           </FormGroup>
         </Col>
+
+        </Row>
+        <Row>
+        
 
         <Col className="pl-md-1" md="2">
           <div>
@@ -182,29 +200,65 @@ export default function Proyecto({match}) {
           </div>
           <DatePicker value={fechas.fecha_limite_inicio} name="fecha_limite_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_limite_inicio"})}/>
         </Col>
-        <Col className="pl-md-1" md="4">
+        <Col className="pl-md-1" md="2">
           <div>
             <label>Fecha Estimada Fin</label>
           </div>
           <DatePicker value={fechas.fecha_estimada_fin} name="fecha_estimada_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_estimada_fin"})}/>
         </Col>
-        <Col className="pl-md-1" md="4">
-          {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surnname}</li>)) }
+        <Col className="pl-md-1" md="2">
+          <div>
+            <label>Fecha Fin</label>
+          </div>
+          <DatePicker value={fechas.fecha_fin} name="fecha_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_fin"})}/>
         </Col>
+
+        
 
         </Row>
 
-         <Row>
+        <Row>
+          <Col className="px-md-1" md="12">
+            <FormGroup>
+              <label>Descripcion</label>
+              <Input
+                defaultValue={projectDetails.descripcion}
+                name="descripcion"
+                onChange={handleEditProjectDetails}
+                placeholder="Descripcion"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+
+
+        <Row>
+          <Col className="pl-md-1" md="4  ">
+            <FormGroup>
+              <label>Personas asignadas</label>
+              <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
+                              {(<option value="nulo">-</option>)}
+                              {resources.map((resource) =>
+                                  <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
+                              )}
+              </Input>
+            </FormGroup>
+            {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surname}</li>)) }
+          </Col>
+          <Col className="pl-md-1" md="4">
+          <label>Tareas</label>
+            {projectDetails.tareas.map(tarea => (<li key={tarea.id}>{tarea.nombre}</li>)) }
+          </Col>
+        <Col className="pl-md-1" md="4">
+        <Button className="pull-right" onClick={submitUpdateProject}>Actualizar</Button>
+        </Col>
         
         </Row>
 
-        {/* <Row>
-          <Col className="pl-md-1" md="4">
-          {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surnname}</li>)) }
-          </Col>
-        </Row> */}
+        <Row>        
+        </Row>
 
-      <Button onClick={submitCreateProject}>+ Crear</Button>
     </div>
     )
 }

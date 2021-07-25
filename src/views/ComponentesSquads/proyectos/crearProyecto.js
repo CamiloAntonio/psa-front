@@ -17,12 +17,13 @@ import {
 import DatePicker from "react-date-picker";
 
 const sampleProject = {
-  "nombre": "salir 2dos",
+  "nombre": "",
   "lider_de_equipo": {
     "legajo": undefined,
     "Nombre": undefined,
     "Apellido": undefined
   },
+  "descripcion": "",
   "personas_asignadas": [],
   fecha_inicio: (new Date()).toLocaleDateString(),
   fecha_limite_inicio: (new Date()).toLocaleDateString(),
@@ -38,6 +39,7 @@ const samplePersonas= [{"legajo":7,"Nombre":"Franco","Apellido":""}, {"legajo":1
 export default function CrearProyecto() {
   const [projectDetails, setProjectDetails] = useState(sampleProject)
   const [resources, setResources] = useState([])
+
   // const [personas, setPersonas] = useState([])
 
   const [fechas, setFechas] = useState({fecha_estimada_fin: new Date(), fecha_limite_inicio: new Date(), fecha_inicio: new Date()})
@@ -131,20 +133,8 @@ export default function CrearProyecto() {
           </FormGroup>
         </Col>
 
-        <Col className="pl-md-1" md="4">
-          <FormGroup>
-            <label>Personas asignadas</label>
-            <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
-                            {projectDetails.personas_asignadas.length==0 && (<option>-</option>)}
-                            {resources.map((resource) =>
-                                <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
-                            )}
-            </Input>
-          </FormGroup>
-        </Col>
-
          </Row>
-
+       
           
 
          <Row>
@@ -168,16 +158,47 @@ export default function CrearProyecto() {
           </div>
           <DatePicker value={fechas.fecha_estimada_fin} name="fecha_estimada_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_estimada_fin"})}/>
         </Col>
-
-        <Col className="pl-md-1" md="4">
-        {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surnname}</li>)) }
-        </Col>
-
         </Row>
 
-         <Row>
-        
+
+        <Row>
+          <Col className="px-md-1" md="12">
+            <FormGroup>
+              <label>Descripcion</label>
+              <Input
+                defaultValue={projectDetails.descripcion}
+                name="descripcion"
+                onChange={handleEditProjectDetails}
+                placeholder="Descripcion"
+                type="text"
+              />
+            </FormGroup>
+          </Col>
         </Row>
+
+          <Row>
+            <Col className="pl-md-1" md="4">
+              <FormGroup>
+                <label>Personas asignadas</label>
+                <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
+                                {projectDetails.personas_asignadas.length==0 && (<option>-</option>)}
+                                {resources.map((resource) =>
+                                    <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
+                                )}
+                </Input>
+              </FormGroup>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col className="pl-md-1" md="4">
+              {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surname}</li>)) }
+            </Col>
+          
+          <Col className="pl-md-1" md="8">
+          <Button className="pull-right" onClick={submitCreateProject}>+ Crear</Button>
+          </Col>
+          </Row>
 
         {/* <Row>
           <Col className="pl-md-1" md="4">
@@ -185,7 +206,6 @@ export default function CrearProyecto() {
           </Col>
         </Row> */}
 
-      <Button onClick={submitCreateProject}>+ Crear</Button>
     </div>
   )
 }
