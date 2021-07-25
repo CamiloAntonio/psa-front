@@ -3,67 +3,142 @@ import { Button , FormGroup,
     Input,
     Table,
     Alert
-    } from 'reactstrap';
+} from 'reactstrap';
 
 import React,{useState , useEffect} from "react";
 import { Link,useParams,useRouteMatch} from 'react-router-dom';
 import TicketService from "services/soporte/ticket.service";
+import ResourceService from "services/soporte/resource.service";
 
+function Responsible(props) {
+    const [resourceName, setResourceName] = useState(null);
 
-function displayTicket(tck,url) {
-    
+    useEffect(() => {
+        let responsible = props.id;
+        let handleResponse  = function (resource) {
+            setResourceName(resource.name + " " + resource.surname);
+        }
+
+        if (responsible === "0") {
+            setResourceName("Sin Asignar");
+        } else {
+            ResourceService.getResourceWithId(responsible,handleResponse);
+        }
+    }, []);
+
+    if (!resourceName) return <td>cargando agente...</td>;
+
+    return <td onClick={props.handleClick}>{resourceName}</td>
+}
+
+function displayRow(tck,url) {
+
+    const handleClick = () => {
+      window.location = `${url}/${tck.ticketNumber}`
+    };
+
     return (
         <tr>
-            <td>{tck.ticketNumber}</td>
-            <td>{tck.description}</td>
-            <td>{tck.state}</td>
-            <td>{tck.responsible}</td>
-            <td>{tck.deadLine}</td>
-
+            <td onClick={handleClick}>{tck.ticketNumber}</td>
+            <td onClick={handleClick}>{tck.title}</td>
+            <td onClick={handleClick}>{tck.state}</td>
+            <Responsible id={tck.responsible} handleClick={handleClick}/>
+            <td onClick={handleClick}>{tck.deadLine}</td>
             <td className="text-right">
                 <Button className="primary" color="primary" size="sm">
                     <i className="tim-icons icon-simple-add"/>{" "}
                     Tarea
                 </Button>{` `}
-                <Link to={`${url}/edicion_ticket`}>
+                <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
-                        <i className="fa fa-edit"></i>
+                        <i className="fa fa-edit"/>
                     </Button>{` `}
                 </Link>
             </td>
         </tr>
-
     )
-} 
+}
 
 export default function Tickets() {
     let {product,version} = useParams();
     let { path, url } = useRouteMatch();
-    
+
     const [tickets, setTickets] = useState(null);
-    const [hidden, setHidden] = useState(true);
-    
-    useEffect(() => {
+    const [noResults, setNoResult] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [nroTicket, setNroTicket] = useState(-1);
+
+    const handleChange = e => {
+        const {name, value} = e.target;
+        setNroTicket(value);
+    };
+
+    const handleSubmit = e => {
+        e.preventDefault();
+
+        if(nroTicket > 0) {
+            fetchTicketById(nroTicket);
+        } else {
+            fetchAllTickets(product,version);
+        }
+    };
+
+    function playAnimation() {
+        setLoading(true);
+
+    }
+
+    function stopAnimation() {
+         setLoading(false);
+    }
+
+    function fetchTicketById(id) {
+        playAnimation();        
+
+        let handleError = (error) => {
+            console.log(error);
+            setNoResult(true);
+            stopAnimation();
+        }
+
+        let handleSuccess = (res) => {
+            setTickets([res]);
+            setNoResult(false);
+            stopAnimation();
+        }
+
+        TicketService.getTicketById(nroTicket,handleSuccess,handleError);
+    }
+
+    function fetchAllTickets(product,version) {
+        playAnimation();
         let handleResponse  = function (tcks) {
             setTickets(tcks);
-            setHidden((tcks.length > 0));
+            setNoResult((tcks.length <= 0));
+            stopAnimation();
         }
 
         TicketService.getTicketByProductAndVersion(product,version,handleResponse)
+    }
+
+    useEffect(() => {
+        setTimeout(() => {
+            fetchAllTickets(product,version);
+        }, 1000)
     }, [product,version]);
-  
-    if (!tickets) return null;
+
 
     return (
         <div className="content">
             <h1>Tickets - {product} - Version: {version} </h1>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label for="exampleEmail">Ingrese Nro. Ticket</Label>
                     <Input
                     type="number"
                     name="numeroTicket"
                     id="exampleEmail"
+                    onChange={handleChange}
                     />
                 </FormGroup>
                 <Button color="info" size="sm" type="submit">
@@ -71,7 +146,7 @@ export default function Tickets() {
                 </Button>
             </form>
 
-            <hr color="#4c4c4c"></hr>
+            <hr color="#4c4c4c"/>
 
             <div className="text-left">
                 <Link to={`${url}/creacion_ticket`}>
@@ -82,9 +157,34 @@ export default function Tickets() {
                 </Link>
             </div>
 
-            {!hidden && <Alert color="default">No hay tickets asociados</Alert>}
+            {loading && 
+                //loading page
+                <div className="content">
+                    <style> 
+                        {"\
+                        .loader {\
+                            border: 16px solid #f3f3f3;\
+                            border-radius: 50%;\
+                            border-top: 16px solid #3498db;\
+                            width: 120px;\
+                            height: 120px;\
+                            -webkit-animation: spin 2s linear infinite; /* Safari */\
+                            animation: spin 2s linear infinite;\
+                        }\
+                        "}
+                    
+                        {"\ @keyframes spin {\
+                                0% { transform: rotate(0deg); }\
+                                100% { transform: rotate(360deg); }\
+                            }\
+                            "}
+                    </style>
+                    <div class="loader"></div>
+                </div>}
 
-            {hidden && <Table>
+            {noResults && !loading && <Alert color="default">No hay tickets asociados</Alert>}
+
+            {!noResults && !loading &&<Table hover>
                 <thead>
                     <tr>
                         <th>Nro Ticket</th>
@@ -96,7 +196,7 @@ export default function Tickets() {
                 </thead>
                 <tbody>
                     {   
-                        tickets.map(tck => displayTicket(tck,url))
+                      tickets.map(tck => displayRow(tck,url))
                     }
                 </tbody>
             </Table>}

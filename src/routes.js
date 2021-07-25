@@ -8,11 +8,11 @@ import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import ToDo from  "views/ToDo.js"
 
-import Recursos from "views/ComponentesSquads/Recursos"
-import Horas from "views/ComponentesSquads/Horas";
+import Recursos from "views/ComponentesSquads/recursos/Recursos"
 import Proyectos from "views/ComponentesSquads/proyectos/proyectos";
 import routesProyectos from "routesProyectos";
 import routesSoporte from "routesSoporte";
+import routesHours from "routesHours";
 
 var routes = [
   {
@@ -23,14 +23,6 @@ var routes = [
     component: Recursos,
     layout: "/admin",
   },
-  {
-    path: "/horas",
-    name: "Carga de Horas",
-    rtlName: "ساعات التحميل",
-    icon: "tim-icons icon-time-alarm",
-    component: Horas,
-    layout: "/admin",
-  },
   // {
   //   path: "/notifications",
   //   name: "Alertas",
@@ -39,14 +31,14 @@ var routes = [
   //   component: Notifications,
   //   layout: "/admin",
   // },
-  {
-    path: "/user-profile",
-    name: "Mensajeria",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: "tim-icons icon-single-02",
-    component: UserProfile,
-    layout: "/admin",
-  },
+  //{
+  //  path: "/user-profile",
+  //  name: "Mensajeria",
+  //  rtlName: "ملف تعريفي للمستخدم",
+  //  icon: "tim-icons icon-single-02",
+  //  component: UserProfile,
+  //  layout: "/admin",
+  //},
   // {
   //   path: "/tables",
   //   name: "Facturacion",
@@ -81,6 +73,6 @@ var routes = [
   // },
 ];
 
-routes = routes.concat(routesSoporte,routesProyectos)
+routes = routes.concat(routesSoporte, routesProyectos, routesHours)
 
 export default routes;

@@ -27,8 +27,7 @@ export default function Soporte() {
         <div className="content">
             <h1>Productos PSA</h1>
 
-
-            {<Table responsive>
+            <Table responsive>
                 <thead>
                     <tr>
                         <th>Producto</th>
@@ -50,7 +49,7 @@ export default function Soporte() {
                         </tr>)}
                     
                 </tbody>
-            </Table>}
+            </Table>
 
         </div>
     )

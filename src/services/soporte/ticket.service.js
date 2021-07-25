@@ -14,9 +14,10 @@ class TicketService {
         then (res => {return callback(res.data)});
     }
 
-    getTicketById(id, callback) {
-        axios.get(API_URL + "tickets/" + id).
-        then (res => {return callback(res.data)});
+    getTicketById(id, successCallback,errorCallback) {
+        axios.get(API_URL + "tickets/" + id)
+        .then (res => {return successCallback(res.data)})
+        .catch(error => { return errorCallback(error)});
     }
 
     createTicket(ticket, callback) {
@@ -25,19 +26,20 @@ class TicketService {
     }
 
     updateTicket(tkt){
-    return axios.put(API_URL + "tickets/" + tkt.id, {
-        "title" : tkt.title,
-        "client" : tkt.client,
-        "responsible" : tkt.responsible,
-        "severity" : tkt.severity,
-        "state" : tkt.state,
-        "description" : tkt.description,
-    },
-    {
-        headers: {}
-    });
-  }
+        axios.put(API_URL + "tickets/" + tkt.ticketNumber, {
+            "title" : tkt.title,
+            "client" : tkt.client,
+            "responsible" : tkt.responsible,
+            "severity" : tkt.severity,
+            "state" : tkt.state,
+            "description" : tkt.description,
+        });
+    }
 
+    deleteTicketById(tktId,callback) {
+        axios.delete(API_URL + "tickets/" + tktId).
+        then(res => {return callback(res.data)});
+    }
 }
 
 export default new TicketService();
