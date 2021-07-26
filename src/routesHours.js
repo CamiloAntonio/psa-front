@@ -24,7 +24,7 @@ var routes = [
   },
   {
       path: "/hours/",
-      name: "Visibilización de Horas",
+      name: "Visualización de Horas",
       rtlName: "ساعات التحميل",
       icon: "tim-icons icon-time-alarm",
       component: HoursView,
