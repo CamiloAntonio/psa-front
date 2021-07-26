@@ -1,29 +1,81 @@
 import {
-    FormGroup,
-    Label,
-    Input,
     Button,
     Card,
-    CardBody, Form
+    CardBody,
+    CardText,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Alert
 } from "reactstrap";
 
 import React,{useEffect,useState} from "react";
-import {Link, useParams, useRouteMatch, useHistory} from "react-router-dom";
+import {useParams, useRouteMatch, useHistory} from "react-router-dom";
 import TicketService from "services/soporte/ticket.service";
 import ResourceService from "services/soporte/resource.service";
+
+
+const ConfirmationModal = (props) => {
+    const {
+      buttonLabel,
+      className,
+      ticketNumber
+    } = props;
+
+    let history = useHistory();
+    const goToPreviousPath = () => {
+        history.goBack()
+    }
+
+    const [modal, setModal] = React.useState(false);
+    const [submitAlertVisible, setSubmitAlertVisible] = React.useState({visible:false,res:""});
+
+    const onDismiss = () => setSubmitAlertVisible({visible:false,res:""});
+    const toggle = () => setModal(!modal);
+
+    const handleDeleteClick = e => {
+        e.preventDefault();
+        console.log(ticketNumber);
+        TicketService.deleteTicketById(ticketNumber,function (res) {
+            console.log(res);
+            setSubmitAlertVisible({visible:true,res:res});
+        });
+        toggle();
+    };
+
+    return (
+      <div>
+        <Button color="info" size="sm" onClick={goToPreviousPath}>
+            Volver
+        </Button>
+        <Button color="danger" onClick={toggle} size="sm">{buttonLabel}</Button>
+        <Modal isOpen={modal} toggle={toggle} className={className}>
+          <ModalHeader toggle={toggle}>Eliminar Ticket</ModalHeader>
+          <ModalBody>
+            Usted desea eliminar el ticket?
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={handleDeleteClick}>Eliminar</Button>{' '}
+            <Button color="secondary" onClick={toggle}>Cancel</Button>
+          </ModalFooter>
+        </Modal>
+        <Alert color="info" isOpen={submitAlertVisible.visible} toggle={onDismiss}>
+            <span>
+                {submitAlertVisible.res}
+            </span>
+        </Alert>
+      </div>
+    );
+  }
 
 export default function VisualizacionTicket() {
 
     const [ticket,setTicket] = useState([]);
     const [resource, setResource] = useState({resourceID:0,name:"Sin asignar",surname:""});
+    const [linkedTasks, setLinkedTasks] = useState([]);
 
     let {product,version,ticketId} = useParams();
-    let { path, url } = useRouteMatch();
-    let history = useHistory();
-
-    const goToPreviousPath = () => {
-        history.goBack()
-    }
 
     useEffect(() => {
         TicketService.getTicketById(ticketId,function(res){
@@ -35,146 +87,41 @@ export default function VisualizacionTicket() {
             }
         })
 
+        TicketService.getTickedLinkedTasks(ticketId,function (res){
+            setLinkedTasks(res);
+        })
+
     }, [ticketId]);
 
     if (!ticket) return null;
 
     return (
          <div className="content">
+
              <h1>Ticket #{ticketId} - {product} - version: {version}</h1>
 
-             <Card>
-                <CardBody>
-                    <Form>
-                        <FormGroup>
-                            <Label for="titulo">Título </Label>
-                            <Input
-                                type="text"
-                                name="titulo"
-                                id="titulo"
-                                required
-                                value={ticket.title}
-                                readOnly
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="severidad">Severidad </Label>
-                            <Input
-                                type="text"
-                                name="severidad"
-                                id="severidad"
-                                required
-                                value={ticket.severity}
-                                readOnly
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="cliente">Cliente </Label>
-                            <Input
-                                type="text"
-                                name="textCliente"
-                                id="cliente"
-                                required
-                                readOnly
-                                value={ticket.client}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="agente">Agente</Label>
-                            <Input
-                                type="text"
-                                name="textAgente"
-                                id="agente"
-                                required
-                                readOnly
-                                value={resource.name + " " + resource.surname}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="estado">Estado </Label>
-                            <Input
-                                type="text"
-                                name="textEstado"
-                                id="estado"
-                                required
-                                readOnly
-                                value={ticket.state}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="fechaDeCreacion">Fecha de creación</Label>
-                            <Input
-                                type="textarea"
-                                name="fechaDeCreacion"
-                                id="fechaDeCreacion"
-                                placeholder="Ingrese una descripcion para el ticket"
-                                required
-                                readOnly
-                                value={ticket.createdDate}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="fechaDeVencimiento">Fecha de vencimiento</Label>
-                            <Input
-                                type="textarea"
-                                name="fechaDeVencimiento"
-                                id="fechaDeVencimiento"
-                                placeholder="Ingrese una descripcion para el ticket"
-                                required
-                                readOnly
-                                value={ticket.deadLine}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="fechaDeUltModificacion">Fecha de última modificación</Label>
-                            <Input
-                                type="textarea"
-                                name="fechaDeUltModificacion"
-                                id="fechaDeUltModificacion"
-                                placeholder="Ingrese una descripcion para el ticket"
-                                required
-                                readOnly
-                                value={ticket.lastModifiedDate}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="tareasAsignadas">Tareas asignadas</Label>
-                            <Input
-                                type="textarea"
-                                name="tareasAsignadas"
-                                id="tareasAsignadas"
-                                placeholder="Ingrese una descripcion para el ticket"
-                                required
-                                readOnly
-                                value="ACA VAN LAS TAREAS ASOCIADAS"
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="descripcion">Descripción </Label>
-                            <Input
-                                type="textarea"
-                                name="descripcion"
-                                id="descripcion"
-                                placeholder="Ingrese una descripcion para el ticket"
-                                required
-                                readOnly
-                                value={ticket.description}
-                            />
-                        </FormGroup>
-                        <div className="text-right">
-                            <Button color="info" size="sm" onClick={goToPreviousPath}>
-                                Volver
-                            </Button>
-                            <Link to={`${url}/edicion_ticket`}>
-                                <Button color="primary" size="sm">
-                                    Editar
-                                </Button>
-                            </Link>
-                        </div>
-                    </Form>
-                </CardBody>
-             </Card>
-
+                <Card style={{color:"#868686"}}>
+                    <CardBody>
+                        <CardText/> <b>Título:</b> {ticket.title}
+                        <CardText style={{marginTop:10}}/> <b> Severidad:</b> {ticket.severity}
+                        <CardText style={{marginTop:10}}/> <b> Cliente:</b> {ticket.client}
+                        <CardText style={{marginTop:10}}/> <b> Agente: </b>{resource.name + " " + resource.surname}
+                        <CardText style={{marginTop:10}}/> <b> Estado: </b>{ticket.state}
+                        <CardText style={{marginTop:10}}/> <b> Fecha de creación: </b>{ticket.createdDate}
+                        <CardText style={{marginTop:10}}/> <b> Fecha de vencimiento: </b>{ticket.deadLine}
+                        <CardText style={{marginTop:10}}/> <b> Fecha de última modificación: </b>{ticket.lastModifiedDate}
+                        <CardText style={{marginTop:10}}/> <b> Ids de tareas asociadas: </b>
+                        <CardText style={{color:"#868686",marginTop:10}}>
+                            {linkedTasks.map((task) =>
+                                    <li style={{marginLeft:10}}>{task}</li>
+                            )}
+                        </CardText>
+                        <CardText style={{marginTop:10}}/> <b> Descripción: </b>{ticket.description}
+                    </CardBody>
+                </Card>
+                <div className="text-right">
+                    {<ConfirmationModal buttonLabel="Eliminar" ticketNumber={ticket.ticketNumber}/>}
+                </div>
          </div>
     )
 
