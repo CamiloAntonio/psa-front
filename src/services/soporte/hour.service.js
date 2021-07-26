@@ -13,8 +13,12 @@ class HoursService {
         axios.post(API_URL + "hour", hour)
     }
     
-    updateHours(hour){
+    updateHours(hour) {
         axios.put(API_URL + "hour/" + hour.id, hour);
+    }
+
+    deleteHours(hourID) {
+        axios.delete(API_URL + "hour/" + hourID)
     }
 }
 

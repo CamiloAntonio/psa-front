@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {Table, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, FormGroup, Label, Input} from 'reactstrap'
+import {Table, FormGroup, Label, Input} from 'reactstrap'
 import HoursRow from './HoursRow';
+import ResourceService from "services/soporte/resource.service";
+import HoursService from "services/soporte/hour.service"
 
 export default function HoursView() {
     const [hours, setHours] = useState([]);
@@ -48,40 +50,16 @@ export default function HoursView() {
 
     // Cargar nombres de recursos
     useEffect(() => {
-        fetch("http://psa-resources-module.herokuapp.com/resource").then(
-            function(response) {
-                if (response.status !== 200) {
-                    console.log("Error obteniendo los recursos");
-                    return;
-                }
-
-                response.json().then(function(data) {
-                    updateResources(data);
-                })
-            }
-        )
-        .catch(function(err) {
-            console.log("Error de Fetch");
-        });
+        ResourceService.getResources(function(response) {
+            updateResources(response);
+        })
     }, []);
 
     // Cargar horas
     useEffect(() => {
-        fetch("http://psa-hours-module.herokuapp.com/hour").then(
-            function(response) {
-                if (response.status !== 200) {
-                    console.log("Error obteniendo las horas");
-                    return;
-                }
-
-                response.json().then(function(data) {
-                    updateHours(data);
-                })
-            }
-        )
-        .catch(function(err) {
-            console.log("Error de Fetch");
-        });
+        HoursService.getHours(function(response) {
+            updateHours(response);
+        })
     }, []);
 
     return (

@@ -11,7 +11,6 @@ export default function HoursCreate() {
         "date": (new Date()).toISOString(),
         "responsibleResourceID": 1 // Hardcodeado a 1 por ahora
     });
-    const [isOpen, setIsOpen] = useState(false);
 
     console.log(new Date())
     console.log(new Date().toISOString())

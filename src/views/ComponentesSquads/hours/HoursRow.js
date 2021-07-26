@@ -1,30 +1,12 @@
 import React from 'react'
-import {Button, ButtonGroup} from 'reactstrap'
+import {Button} from 'reactstrap'
 import {Link} from "react-router-dom";
-
-const API_URL = "https://psa-hours-module.herokuapp.com/hour/"
+import HoursService from "services/soporte/hour.service";
 
 export default function HoursRow({id, responsibleName, quantity, date}) {
     function deleteHours(id) {
-        fetch(
-            API_URL + id, 
-            {   method: "delete",
-                body: id
-            }
-        ).then(function(response) {
-                if (response.status !== 200) {
-                    console.log("Error borrando las horas del lado del servidor");
-                    return;
-                }
-
-                window.location.reload();
-            }
-        ).catch(function(err) {
-            console.log("Error de Fetch");
-        });
-
-
-        console.log(id);
+        HoursService.deleteHours(id);
+        window.location.reload();
     }
 
     // Credits to: https://stackoverflow.com/questions/27012854/how-to-change-iso-date-string-to-date-object
@@ -61,5 +43,3 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
         </tr>
     )
 }
-
-//function() {deleteHours(id)}
