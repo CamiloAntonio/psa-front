@@ -80,7 +80,7 @@ export default function Proyectos() {
 
 
 
-              <Button onClick={handleDeleteProject} value={proyecto.id}> Borrar </Button>
+              <Button color="danger" onClick={handleDeleteProject} value={proyecto.id} size="sm"> Borrar </Button>
             </tr>
           </tbody>
         ))}

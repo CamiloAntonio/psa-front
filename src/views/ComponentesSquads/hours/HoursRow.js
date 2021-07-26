@@ -39,7 +39,20 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
             <td>{quantity}</td>
             <td>{date.split("T")[0]}</td>
             <td className="text-right">
-                                <Button color="danger" size="sm" onClick={function() {deleteHours(id)}}>Eliminar</Button>{' '}
+                                <Button 
+                                    color="danger" 
+                                    size="sm" 
+                                    onClick={() => {
+                                            if (window.confirm(
+                                                `¿Estás seguro que querés borrar las horas con ID ${id}?` +
+                                                "\n¡Esta acción no se podrá deshacer!")) {
+                                            deleteHours(id); 
+                                            }
+                                        } 
+                                    }>
+                                    Eliminar
+                                </Button>
+                                {' '}
                                 <Link to={`edit/${id}/`}><Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"/>
                     </Button></Link>
@@ -47,3 +60,5 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
         </tr>
     )
 }
+
+//function() {deleteHours(id)}
