@@ -54,15 +54,6 @@ var routes = [
     redirect: true
   },
   {
-    path: "/crear-tarea/",
-    name: "Crear Tarea",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-chart-pie-36",
-    component: CrearTarea,
-    layout: "/admin",
-    redirect: true
-  },
-  {
     path: "/crear-tarea/:id",
     name: "Crear Tarea",
     rtlName: "لوحة القيادة",
@@ -71,6 +62,16 @@ var routes = [
     layout: "/admin",
     redirect: true
   },
+  {
+    path: "/crear-tarea/",
+    name: "Crear Tarea",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-chart-pie-36",
+    component: CrearTarea,
+    layout: "/admin",
+    redirect: true
+  },
+
 
 
 ];

@@ -53,7 +53,7 @@ export default function CrearTarea({match}) {
         console.log(result)
       },
       (error) => {
-        console.log("hubo error bro")
+        console.log("hubo error")
       }
     )
     projectService.getTaskById(match.params.id)
@@ -62,10 +62,6 @@ export default function CrearTarea({match}) {
         (result) => {
             setTaskDetails(result)
             let newFechas = {...fechas}
-            // for (i in fechas) {
-            //     if(result[i].length>0) newFechas[i] = new Date(result[i])
-            // }    
-
             newFechas.fecha_inicio = new Date(result.fecha_inicio)
             if(result.fecha_fin.length>0) newFechas.fecha_fin = new Date(result.fecha_fin)
 
@@ -74,7 +70,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
     projectService.getResources()
@@ -85,7 +81,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
       projectService.getProjects()
@@ -96,7 +92,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
   }, [])
@@ -126,35 +122,12 @@ export default function CrearTarea({match}) {
 
   function handleSelectTicket(e) {
     console.log(e.target.value)
-
-    // let newTicket = {title: e.target.value, ticketNumber: e.target.id }
     let newTicket = tickets.filter(t => (t.ticketNumber == e.target.value))
     console.log(newTicket)
     let newTickets = [...taskDetails.tickets, ...newTicket]
 
     let newTaskDetails = {...taskDetails, tickets: newTickets}
     setTaskDetails(newTaskDetails)
-    
-    // let newTaskDetails = { ...taskDetails }
-    
-    // newTaskDetails.tickets = newTickets
-
-    // setTaskDetails(newTaskDetails)
-
-    // (newTaskDetails)
-  }
-
-
-  function submitCreateTask() {
-    projectService.updateTask(taskDetails).then(res => res.json()).then(
-      (result) => {
-        console.log(result)
-        window.location.replace("/admin/tareas");
-      },
-      (error) => {
-        console.log("hubo error bro")
-      }
-    )
   }
 
   function handleChangeFecha(e) {
@@ -165,6 +138,29 @@ export default function CrearTarea({match}) {
     newTaskDetails[e.name] = e.fecha.toLocaleDateString()
     setTaskDetails(newTaskDetails)
   }
+
+  function submitUpdateTask() {
+    projectService.updateTask(taskDetails).then(res => res.json()).then(
+      (result) => {
+        console.log(result)
+        taskDetails.tickets.map(t => {
+          projectService.linkTaskAndTicket(t.ticketNumber, taskDetails.id).then(
+            (result1) => {
+              console.log("se linkeo la tarea", result ," al ticket", t.ticketNumber, ":", result1)
+            },
+            (error) => {
+              console.log("hubo error", error)
+            }
+          )
+        })
+        window.location.replace("/admin/tareas");
+      },
+      (error) => {
+        console.log("hubo error", error)
+      }
+    )
+  }
+
 
   return (
     <div className="content">
@@ -183,18 +179,6 @@ export default function CrearTarea({match}) {
           </FormGroup>
         </Col>
 
-
-        {/*<Col className="pl-md-1" md="4">
-          <FormGroup>
-            <label>Personas asignadas</label>
-            <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
-            {personas.map((persona) =>
-                <option value={persona.legajo} key={persona.legajo}>{persona.Nombre} {persona.Apellido}</option>
-                )}
-                </Input>
-                </FormGroup>
-            </Col> */}
-
         <Col className="pl-md-1" md="3">
           <FormGroup>
             <label>Proyecto al que pertenece</label>
@@ -206,8 +190,7 @@ export default function CrearTarea({match}) {
             </Input>
           </FormGroup>
         </Col>
-
-            <Col className="pl-md-1" md="3">
+        <Col className="pl-md-1" md="3">
              <FormGroup>
                <label>Persona asignada</label>
                <Input value={taskDetails.persona_asignada.resourceID} type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsignada}>
@@ -218,8 +201,8 @@ export default function CrearTarea({match}) {
                                 )}
                </Input>
              </FormGroup>
-           </Col>
-           <Col className="px-md-1" md="3">
+        </Col>
+        <Col className="px-md-1" md="3">
             <FormGroup>
               <label>Estado</label>
               <Input value={taskDetails.estado} type="select" name="estado" id="estado" required onChange={handleEditTaskDetails}>
@@ -230,17 +213,6 @@ export default function CrearTarea({match}) {
               </Input>
             </FormGroup>
         </Col>
-
-        
-          
-          {/* <label>Fecha Inicio</label>
-          <DatePicker value={fechas.fecha_inicio} name="fecha_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_inicio"})}/>
-
-          <label>Fecha Limite Inicio</label>
-          <DatePicker value={fechas.fecha_limite_inicio} name="fecha_limite_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_limite_inicio"})}/>
-
-          <label>Fecha Estimada Fin</label>
-          <DatePicker value={fechas.fecha_estimada_fin} name="fecha_estimada_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_estimada_fin"})}/> */}
 
         </Row>
         <Row>
@@ -287,7 +259,7 @@ export default function CrearTarea({match}) {
         </Col>
         </Row>
 
-      <Button className="pull-right" onClick={submitCreateTask}>Actualizar</Button>
+      <Button className="pull-right" onClick={submitUpdateTask}>Actualizar</Button>
     </div>
   )
 }
