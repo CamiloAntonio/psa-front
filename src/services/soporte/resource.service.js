@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://psa-resources-module.herokuapp.com/";
+const API_URL = "https://psa-resources-module.herokuapp.com/";
 
 class ResourceService {
     getResources(callback) {
