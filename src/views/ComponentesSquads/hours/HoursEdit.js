@@ -12,7 +12,7 @@ export default function HoursEdit() {
     const hourID = useParams().id;
     const [hour, setHour] = useState({
         "id": 0,
-        "quantity": 0,
+        "quantity": 1,
         "date": (new Date()).toISOString(),
         "responsibleResourceID": 1,
         "taskId": 0

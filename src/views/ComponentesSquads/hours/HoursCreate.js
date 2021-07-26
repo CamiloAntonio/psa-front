@@ -7,11 +7,10 @@ import ProjectService from "services/project.service"
 
 export default function HoursCreate() {
     let taskId = Number(useParams().id);
-    console.log(useParams());   
 
     const [hour, setHour] = useState({
         "id": 0,
-        "quantity": 0,
+        "quantity": 1,
         "date": (new Date()).toISOString(),
         "responsibleResourceID": 1, // Hardcodeado a 1 por ahora
         "taskId": taskId
@@ -26,7 +25,6 @@ export default function HoursCreate() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        console.log(hour);
         HoursService.createHours(hour);
         goToPreviousPath();
     }
