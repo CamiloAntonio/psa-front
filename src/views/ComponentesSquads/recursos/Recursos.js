@@ -13,7 +13,7 @@ export default function Recursos() {
     }
 
     useEffect(() => {
-        fetch("http://psa-resources-module.herokuapp.com/resource").then(
+        fetch("https://psa-resources-module.herokuapp.com/resource").then(
             function(response) {
                 if (response.status !== 200) {
                     console.log("Error obteniendo los recursos");
