@@ -77,11 +77,11 @@ export default function EdicionTicket() {
                     <CardBody>
                         <form onSubmit={handleSubmit}>
                             <FormGroup>
-                                <Label for="titulo">Título *</Label>
+                                <Label for="title">Título *</Label>
                                 <Input
                                     type="text"
-                                    name="titulo"
-                                    id="titulo"
+                                    name="title"
+                                    id="title"
                                     placeholder="Ingerese un título"
                                     required
                                     defaultValue={ticket.title}
@@ -134,11 +134,11 @@ export default function EdicionTicket() {
                                 </Input>
                             </FormGroup>
                             <FormGroup>
-                                <Label for="descripcion">Descripción *</Label>
+                                <Label for="description">Descripción *</Label>
                                 <Input
                                     type="textarea"
-                                    name="descripcion"
-                                    id="descripcion"
+                                    name="description"
+                                    id="description"
                                     placeholder="Ingrese una descripcion para el ticket"
                                     required
                                     defaultValue={ticket.description}
