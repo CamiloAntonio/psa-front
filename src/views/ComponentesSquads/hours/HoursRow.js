@@ -1,9 +1,12 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {Button} from 'reactstrap'
 import {Link} from "react-router-dom";
 import HoursService from "services/soporte/hour.service";
+import ProjectService from "services/project.service"
 
-export default function HoursRow({id, responsibleName, quantity, date}) {
+export default function HoursRow({id, responsibleName, quantity, date, taskId}) {
+    const [taskName, setTaskName] = useState(["Nombre Tarea"])
+
     function deleteHours(id) {
         HoursService.deleteHours(id);
         window.location.reload();
@@ -15,10 +18,19 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
 
+    useEffect(() => {
+        ProjectService.getTaskById(taskId)
+            .then(res => res.json())
+            .then(function(response) {
+            setTaskName(response.nombre);
+        })
+    }, [])
+
     return (
         <tr>
             <th scope="row">{id}</th>
             <td>{responsibleName}</td>
+            <td>{taskName} [{taskId}]</td>
             <td>{quantity}</td>
             <td>{parseISOString(date).toLocaleDateString("en-US")}</td>
             <td className="text-right">

@@ -80,6 +80,7 @@ export default function HoursView() {
                     <tr>
                         <th>ID</th>
                         <th>Responsable</th>
+                        <th>Tarea [ID]</th>
                         <th>Horas</th>
                         <th>Fecha</th>
                     </tr>
@@ -87,7 +88,7 @@ export default function HoursView() {
                 <tbody>
                     {hours.map(data => {
                         if (resourcesWanted.includes(data.responsibleResourceID)) {
-                            return <HoursRow key={data.id} id={data.id} responsibleName={resources[data.responsibleResourceID]} quantity={data.quantity} date={data.date}/>;
+                            return <HoursRow key={data.id} id={data.id} responsibleName={resources[data.responsibleResourceID]} quantity={data.quantity} date={data.date} taskId={data.taskId}/>;
                         } 
                     })}
                 </tbody>

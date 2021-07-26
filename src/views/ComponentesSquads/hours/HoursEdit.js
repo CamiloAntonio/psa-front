@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react'
 import {Input, Button, Label, FormGroup} from 'reactstrap'
 import { useParams, useHistory } from 'react-router-dom';
 import HoursService from "services/soporte/hour.service";
+import ProjectService from "services/project.service"
 import DatePicker from "react-date-picker";
 
 export default function HoursEdit() {
+    
+    const [taskName, setTaskName] = useState(["Nombre Tarea"])
+
     const hourID = useParams().id;
     const [hour, setHour] = useState({
         "id": 0,
         "quantity": 0,
         "date": (new Date()).toISOString(),
-        "responsibleResourceID": 1 
+        "responsibleResourceID": 1,
+        "taskId": 0
     })
 
     // Go to previous page
@@ -56,6 +61,14 @@ export default function HoursEdit() {
         })
     }, []);
 
+    useEffect(() => {
+        ProjectService.getTaskById(hour.taskId)
+            .then(res => res.json())
+            .then(function(response) {
+            setTaskName(response.nombre);
+        })
+    }, [hour.taskId])
+
     const handleDateChange = e => {
         var value = e
         setHour({
@@ -73,7 +86,7 @@ export default function HoursEdit() {
     return (
         <div className="content">
             <h1>Edición de Horas</h1>
-            <h3>Tarea {hourID}</h3>
+            <h3>Tarea {taskName} [{hour.taskId}]</h3>
             <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label>Ingrese la cantidad de horas trabajadas</Label>
@@ -84,7 +97,7 @@ export default function HoursEdit() {
                         name="date"
                         clearIcon={null}
                         calendarIcon={
-                            <i class="far fa-calendar"></i>
+                            <i className="far fa-calendar"></i>
                         }
                         value={parseISOString(hour.date)}
                         maxDate={new Date()}
@@ -95,7 +108,7 @@ export default function HoursEdit() {
                 
                 <div className="text-right">
                     <Button color="secondary" size="sm" onClick={goToPreviousPath}>Cancelar</Button>
-                    <Button color="primary" type="submit" size="sm">Guardar cambios</Button> 
+                    <Button color="info" type="submit" size="sm">Guardar cambios</Button> 
                 </div>
             </form>
         </div>

@@ -1,19 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom';
 import {Input, Button, FormGroup, Label} from 'reactstrap'
 import HoursService from "services/soporte/hour.service";
 import DatePicker from "react-date-picker";
+import ProjectService from "services/project.service"
 
 export default function HoursCreate() {
+    let taskId = Number(useParams().id);
+    console.log(useParams());   
+
     const [hour, setHour] = useState({
         "id": 0,
         "quantity": 0,
         "date": (new Date()).toISOString(),
-        "responsibleResourceID": 1 // Hardcodeado a 1 por ahora
+        "responsibleResourceID": 1, // Hardcodeado a 1 por ahora
+        "taskId": taskId
     });
 
-
-    let taskID = useParams().id;
+    const [taskName, setTaskName] = useState(["Nombre Tarea"])
 
     let history = useHistory();
     const goToPreviousPath = () => {
@@ -22,6 +26,7 @@ export default function HoursCreate() {
 
     const handleSubmit = e => {
         e.preventDefault();
+        console.log(hour);
         HoursService.createHours(hour);
         goToPreviousPath();
     }
@@ -53,10 +58,18 @@ export default function HoursCreate() {
         return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
 
+    useEffect(() => {
+        ProjectService.getTaskById(hour.taskId)
+            .then(res => res.json())
+            .then(function(response) {
+            setTaskName(response.nombre);
+        })
+    }, [hour.taskId])
+
     return (
         <div className="content">
             <h1>Carga de Horas</h1>
-            <h3>Tarea {taskID}</h3>
+            <h3>Tarea {taskName} [{taskId}]</h3>
             <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label>Ingrese la cantidad de horas trabajadas:</Label>
@@ -87,7 +100,7 @@ export default function HoursCreate() {
                 
                 <div className="text-right">  
                     <Button color="secondary" size="sm" onClick={goToPreviousPath}>Cancelar</Button>
-                    <Button color="primary" type="submit" size="sm">Cargar horas</Button> 
+                    <Button color="info" type="submit" size="sm">Cargar horas</Button> 
                 </div>
             </form>
 
