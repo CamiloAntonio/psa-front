@@ -60,7 +60,7 @@ export default function CrearTarea({match}) {
           // console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
     projectService.getResources()
@@ -71,7 +71,7 @@ export default function CrearTarea({match}) {
           // console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
       projectService.getProjects()
@@ -82,7 +82,7 @@ export default function CrearTarea({match}) {
           // console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
   }, [])
@@ -131,13 +131,24 @@ export default function CrearTarea({match}) {
   function submitCreateTask() {
     projectService.postTask(taskDetails).then(res => res.json()).then(
       (result) => {
-        // console.log(result)
+        console.log("se creo la tarea",   result)
+        taskDetails.tickets.map(t => {
+          projectService.linkTaskAndTicket(t.ticketNumber, result).then(
+            (result1) => {
+              console.log("se linkeo la tarea", result ," al ticket", t.ticketNumber, ":", result1)
+            },
+            (error) => {
+              console.log("hubo error", error)
+            }
+          )
+        })
         window.location.replace("/admin/tareas");
       },
       (error) => {
-        console.log("hubo error bro")
+        console.log("hubo error")
       }
     )
+    
   }
 
 //   function handleChangeFecha(e) {

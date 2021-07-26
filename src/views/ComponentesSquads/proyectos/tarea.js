@@ -53,7 +53,7 @@ export default function CrearTarea({match}) {
         console.log(result)
       },
       (error) => {
-        console.log("hubo error bro")
+        console.log("hubo error")
       }
     )
     projectService.getTaskById(match.params.id)
@@ -70,7 +70,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
     projectService.getResources()
@@ -81,7 +81,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
       projectService.getProjects()
@@ -92,7 +92,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
   }, [])
@@ -143,10 +143,20 @@ export default function CrearTarea({match}) {
     projectService.updateTask(taskDetails).then(res => res.json()).then(
       (result) => {
         console.log(result)
+        taskDetails.tickets.map(t => {
+          projectService.linkTaskAndTicket(t.ticketNumber, taskDetails.id).then(
+            (result1) => {
+              console.log("se linkeo la tarea", result ," al ticket", t.ticketNumber, ":", result1)
+            },
+            (error) => {
+              console.log("hubo error", error)
+            }
+          )
+        })
         window.location.replace("/admin/tareas");
       },
       (error) => {
-        console.log("hubo error bro")
+        console.log("hubo error", error)
       }
     )
   }

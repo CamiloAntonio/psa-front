@@ -83,6 +83,16 @@ class UserService {
     const res = fetch(TASKS_API_URL + taskDetails.id, requestOptions)
     return res
   }
+
+
+  linkTaskAndTicket(ticketId, taskId){
+    const requestOptions = {
+      method: 'POST'
+    };
+    let url = TICKETS_API_URL + ticketId + "/task/" + taskId
+    const res = fetch(url , requestOptions)
+    return res
+  }
 }
 
 export default new UserService();
