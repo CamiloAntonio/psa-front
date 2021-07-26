@@ -10,13 +10,11 @@ const TICKETS_API_URL = "https://psa-suport-module.herokuapp.com/tickets/";
 class UserService {
   getProjects() {
     let pjs = fetch(PORJECTS_API_URL);
-    console.log(pjs)
     return pjs
   }
 
   getProjectById(id) {
     let pjs = fetch(PORJECTS_API_URL + id);
-    console.log(pjs)
     return pjs
   }
 
@@ -27,7 +25,6 @@ class UserService {
       body: JSON.stringify(projectDetails)
     };
     let pjs = fetch(PORJECTS_API_URL + projectDetails.id, requestOptions);
-    console.log(pjs)
     return pjs
   }
 
@@ -48,26 +45,22 @@ class UserService {
 
   getResources() {
     let resources = fetch(RESOURCES_API_URL);
-    console.log("las resource", resources)
     return resources
   }
 
   getTickets() {
     let tickets = fetch(TICKETS_API_URL);
-    console.log("los tickets", tickets)
     return tickets
   }
 
 
   getTasks() {
     let pjs = fetch(TASKS_API_URL);
-    console.log(pjs)
     return pjs
   }
 
   getTaskById(id) {
     let tsk = fetch(TASKS_API_URL + id);
-    console.log(tsk)
     return tsk
   }
 
