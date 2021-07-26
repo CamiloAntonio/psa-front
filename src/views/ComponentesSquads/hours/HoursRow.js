@@ -27,9 +27,10 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
         console.log(id);
     }
 
-
-    function modifyHours(id) {
-        console.log(id);
+    // Credits to: https://stackoverflow.com/questions/27012854/how-to-change-iso-date-string-to-date-object
+    function parseISOString(s) {
+        var b = s.split(/\D+/);
+        return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
     }
 
     return (
@@ -37,7 +38,7 @@ export default function HoursRow({id, responsibleName, quantity, date}) {
             <th scope="row">{id}</th>
             <td>{responsibleName}</td>
             <td>{quantity}</td>
-            <td>{date.split("T")[0]}</td>
+            <td>{parseISOString(date).toLocaleDateString("en-US")}</td>
             <td className="text-right">
                                 <Button 
                                     color="danger" 

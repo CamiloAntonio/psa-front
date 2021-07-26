@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import {Table, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
+import {Table, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, FormGroup, Label, Input} from 'reactstrap'
 import HoursRow from './HoursRow';
 
 export default function HoursView() {
     const [hours, setHours] = useState([]);
     const [resources, setResources] = useState({});
+    const [resourcesWanted, setResourcesWanted] = useState([1,2,3]);
+
+    const handleChange = e => {
+        const {name, value} = e.target;
+        if (value == 0) {
+            setResourcesWanted([1,2,3]);
+        } else {
+            setResourcesWanted([Number(value)]);
+        }
+    };
 
     function updateResources(data) {
         var allResources = {};
@@ -77,16 +87,16 @@ export default function HoursView() {
     return (
         <div className="content">
             <h1>Horas Cargadas</h1>
-            <UncontrolledDropdown group>
-                <DropdownToggle caret color="secondary" data-toggle="dropdown">
-                    Text
-                </DropdownToggle>
-                <DropdownMenu>
-                    {Object.values(resources).map(name => {
-                        return <DropdownItem>{name}</DropdownItem>
-                    })}
-                </DropdownMenu>
-            </UncontrolledDropdown>
+            <FormGroup>
+                <Label>Recurso</Label>
+                <Input type="select" name="responsible" onChange={handleChange} id="resource">
+                    <option value={0}>Todos los recursos</option>
+                    {Object.keys(resources).map(resID => {
+                            return <option value={resID}>{resources[resID]}</option>
+                        })
+                    }
+                </Input>
+            </FormGroup>
             <Table>
                 <thead>
                     <tr>
@@ -98,7 +108,9 @@ export default function HoursView() {
                 </thead>
                 <tbody>
                     {hours.map(data => {
-                    return <HoursRow key={data.id} id={data.id} responsibleName={resources[data.responsibleResourceID]} quantity={data.quantity} date={data.date}/>;
+                        if (resourcesWanted.includes(data.responsibleResourceID)) {
+                            return <HoursRow key={data.id} id={data.id} responsibleName={resources[data.responsibleResourceID]} quantity={data.quantity} date={data.date}/>;
+                        } 
                     })}
                 </tbody>
             </Table>
