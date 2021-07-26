@@ -15,20 +15,20 @@ import {
   Col,
 } from "reactstrap";
 import DatePicker from "react-date-picker";
-
+import { Link } from 'react-router-dom';
 
 const sampleProj = {
-    "nombre": "string",
+    "nombre": "",
     "lider_de_equipo": {
       "legajo": 0,
-      "Nombre": "string",
-      "Apellido": "string"
+      "Nombre": "",
+      "Apellido": ""
     },
     "personas_asignadas": [
       {
         "legajo": 0,
-        "Nombre": "string",
-        "Apellido": "string"
+        "Nombre": "",
+        "Apellido": ""
       }
     ],
     "fecha_inicio": "string",
@@ -242,11 +242,11 @@ export default function Proyecto({match}) {
                               )}
               </Input>
             </FormGroup>
-            {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surname}</li>)) }
+            {projectDetails.personas_asignadas.map(resource => (<li key={resource.resourceID}>{resource.name} {resource.surname}<Button size="sm" onClick={() => {setProjectDetails({...projectDetails, personas_asignadas: projectDetails.personas_asignadas.filter(p => p.resourceID !== resource.resourceID)})}}>x</Button></li>)) }
           </Col>
           <Col className="pl-md-1" md="4">
           <label>Tareas</label>
-            {projectDetails.tareas.map(tarea => (<li key={tarea.id}>{tarea.nombre}</li>)) }
+            {projectDetails.tareas.map(tarea => (<li key={tarea.id}><Link to={`/admin/tarea/${tarea.id}`} style={{ 'color': 'inherit' }}>{tarea.nombre}</Link></li>)) }
           </Col>
         <Col className="pl-md-1" md="4">
         <Button className="pull-right" onClick={submitUpdateProject}>Actualizar</Button>

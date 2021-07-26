@@ -6,10 +6,7 @@ import {
     Button,
     Card,
     CardBody,
-    Modal, 
-    ModalHeader, 
-    ModalBody,
-    ModalFooter
+    Alert
 } from "reactstrap";
 
 import React from "react";
@@ -19,47 +16,10 @@ import ResourceService from "services/soporte/resource.service";
 import {useParams,useHistory} from "react-router-dom";
 import {ESTADOS} from "./estados"
 
+
 function createOption(text,fcmp,param1,param2,value=null) {
     return React.createElement('option',{value:value,selected:fcmp(param1,param2)},text);
 }
-
-
-const ConfirmationModal = (props) => {
-    const {
-      buttonLabel,
-      className,
-      ticketNumber
-    } = props;
-  
-    const [modal, setModal] = React.useState(false);
-  
-    const toggle = () => setModal(!modal);
-
-    const handleDeleteClick = e => {
-        e.preventDefault();
-        console.log(ticketNumber);
-        TicketService.deleteTicketById(ticketNumber,function (res) {
-            console.log(res);
-            //setDeleteMessage(res);
-        });
-    };
-  
-    return (
-      <div>
-        <Button color="danger" onClick={toggle} size="sm">{buttonLabel}</Button>
-        <Modal isOpen={modal} toggle={toggle} className={className}>
-          <ModalHeader toggle={toggle}>Eliminar Ticket</ModalHeader>
-          <ModalBody>
-            Usted desea eliminar el ticket?
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onClick={handleDeleteClick}>Eliminar</Button>{' '}
-            <Button color="secondary" onClick={toggle}>Cancel</Button>
-          </ModalFooter>
-        </Modal>
-      </div>
-    );
-  }
 
 export default function EdicionTicket() {
     let {product,version,ticketId} = useParams();
@@ -86,14 +46,16 @@ export default function EdicionTicket() {
     const handleSubmit = e => {
         e.preventDefault();
         console.log(ticket);
-        TicketService.updateTicket(ticket);
+        TicketService.updateTicket(ticket,function (res){
+            setSubmitAlertVisible({visible:true,res:res});
+        });
     };
 
-    
+    const onDismiss = () => setSubmitAlertVisible({visible:false,res:""});
 
     const [ticket,setTicket] = React.useState([]);
     const [resources, setResources] = React.useState([]);
-    const [deleteMessage, setDeleteMessage] = React.useState([])
+    const [submitAlertVisible, setSubmitAlertVisible] = React.useState({visible:false,res:""});
 
     React.useEffect(() => {
         TicketService.getTicketById(ticketId,function(res){
@@ -122,7 +84,7 @@ export default function EdicionTicket() {
                                     id="titulo"
                                     placeholder="Ingerese un título"
                                     required
-                                    value={ticket.title}
+                                    defaultValue={ticket.title}
                                     onChange={handleChange}
                                 />
                             </FormGroup>
@@ -179,12 +141,11 @@ export default function EdicionTicket() {
                                     id="descripcion"
                                     placeholder="Ingrese una descripcion para el ticket"
                                     required
-                                    value={ticket.description}
+                                    defaultValue={ticket.description}
                                     onChange={handleChange}
                                 />
                             </FormGroup>
                             <div className="text-right">
-                                <ConfirmationModal buttonLabel="Eliminar" ticketNumber={ticket.ticketNumber}/>
                                 <Button color="info" size="sm" onClick={goToPreviousPath}>
                                     Volver
                                 </Button>
@@ -194,6 +155,11 @@ export default function EdicionTicket() {
                                 <Button color="primary" type="submit"  size="sm">
                                     Confirmar cambios
                                 </Button>
+                                <Alert color="info" isOpen={submitAlertVisible.visible} toggle={onDismiss}>
+                                    <span>
+                                        {submitAlertVisible.res}
+                                    </span>
+                                </Alert>
                             </div>
                         </form>
                     </CardBody>

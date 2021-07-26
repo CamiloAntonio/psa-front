@@ -45,10 +45,16 @@ function displayRow(tck,url) {
             <Responsible id={tck.responsible} handleClick={handleClick}/>
             <td onClick={handleClick}>{tck.deadLine}</td>
             <td className="text-right">
-                <Button className="primary" color="primary" size="sm">
-                    <i className="tim-icons icon-simple-add"/>{" "}
-                    Tarea
-                </Button>{` `}
+                <Link to={{
+                    pathname:"/admin/crear-tarea/" + tck.ticketNumber,
+                    state: { fromDashboard: true }
+                }}>
+                    <Button className="primary" color="primary" size="sm">
+                        <i className="tim-icons icon-simple-add"/>{" "}
+                        Tarea
+                    </Button>{` `}
+                </Link>
+
                 <Link to={`${url}/${tck.ticketNumber}/edicion_ticket`}>
                     <Button className="btn-icon" color="info" size="sm">
                         <i className="fa fa-edit"/>
@@ -107,7 +113,7 @@ export default function Tickets() {
             stopAnimation();
         }
 
-        TicketService.getTicketById(nroTicket,handleSuccess,handleError);
+        TicketService.getTicketById(id,handleSuccess,handleError);
     }
 
     function fetchAllTickets(product,version) {
@@ -179,7 +185,7 @@ export default function Tickets() {
                             }\
                             "}
                     </style>
-                    <div class="loader"></div>
+                    <div class="loader"/>
                 </div>}
 
             {noResults && !loading && <Alert color="default">No hay tickets asociados</Alert>}

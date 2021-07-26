@@ -4,7 +4,8 @@ import {
     Input,
     Button,
     Card,
-    CardBody
+    CardBody,
+    Alert
 } from "reactstrap";
 
 import React,{useState , useEffect} from "react";
@@ -57,11 +58,15 @@ export default function CreacionTicket() {
         console.log(newTicket);
         TicketService.createTicket(newTicket,function(res) {
             console.log(res);
+            setSubmitAlertVisible({visible:true,res:res});
         });
     };
 
+    const onDismiss = () => setSubmitAlertVisible({visible:false,res:""});
+
     const [clients,setClients] = useState([]);
     const [resources, setResources] = useState([]);
+    const [submitAlertVisible, setSubmitAlertVisible] = React.useState({visible:false,res:""});
 
     useEffect(() => {
         ResourceService.getResources(function(res){
@@ -139,6 +144,11 @@ export default function CreacionTicket() {
                             <Button color="primary" type="submit" size="sm">
                                 Crear
                             </Button> {' '}
+                            <Alert color="info" isOpen={submitAlertVisible.visible} toggle={onDismiss}>
+                                    <span>
+                                        {submitAlertVisible.res}
+                                    </span>
+                            </Alert>
                         </div>
                     </form>
                 </CardBody>

@@ -25,7 +25,7 @@ class TicketService {
         then (res => {return callback(res.data)});
     }
 
-    updateTicket(tkt){
+    updateTicket(tkt, callback){
         axios.put(API_URL + "tickets/" + tkt.ticketNumber, {
             "title" : tkt.title,
             "client" : tkt.client,
@@ -33,12 +33,18 @@ class TicketService {
             "severity" : tkt.severity,
             "state" : tkt.state,
             "description" : tkt.description,
-        });
+        }).then (res => {return callback(res.data)}
+        );
     }
 
     deleteTicketById(tktId,callback) {
         axios.delete(API_URL + "tickets/" + tktId).
         then(res => {return callback(res.data)});
+    }
+
+    getTickedLinkedTasks(ticketId, callback) {
+        axios.get(API_URL + "tickets/" + ticketId + "/task").
+        then (res => {return callback(res.data)});
     }
 }
 
