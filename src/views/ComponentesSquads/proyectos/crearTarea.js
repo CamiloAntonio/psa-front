@@ -19,9 +19,9 @@ import Tickets from '../soporte/Tickets';
 
 
 const sampleTask = {
-  "nombre": "string",
-  "descripcion": "string",
-  "id_proyecto_asociado": 0,
+  "nombre": "",
+  "descripcion": "",
+  "id_proyecto_asociado": undefined,
   "persona_asignada": {
   },
   "fecha_inicio": (new Date()).toLocaleDateString(),
@@ -220,7 +220,7 @@ export default function CrearTarea({match}) {
                     value={taskDetails.descripcion}
                     name="descripcion"
                     onChange={handleEditTaskDetails}
-                    placeholder="descripcion"
+                    placeholder="Descripcion"
                     type="text"
                     />
                 </FormGroup>

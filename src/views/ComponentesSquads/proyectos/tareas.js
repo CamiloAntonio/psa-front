@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 const tasks = [{"name":"lavar el auto","description":"franco tiene que lavar el auto","associated_project_id":0,"assigned_worker":{"legajo":0,"Nombre":"string","Apellido":"string"},"id":37795658689678337769717990116820166939,"status":"No Iniciado"}]
 
 export default function Tareas() {
-    const [tareas, setTareas] = useState(tasks)
+    const [tareas, setTareas] = useState([])
     const [proyectos, setProyectos] = useState([])
 
     useEffect(() => {

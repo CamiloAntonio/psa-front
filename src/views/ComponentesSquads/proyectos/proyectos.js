@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 const proyects = [{ id: undefined, nombre: "", lider_de_equipo: { name: "", id: undefined } }]
 
 export default function Proyectos() {
-  const [proyectos, setProyectos] = useState(proyects)
+  const [proyectos, setProyectos] = useState([])
 
   useEffect(() => {
     projectService.getProjects()
