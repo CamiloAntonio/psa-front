@@ -12,10 +12,6 @@ export default function HoursCreate() {
         "responsibleResourceID": 1 // Hardcodeado a 1 por ahora
     });
 
-    console.log(new Date())
-    console.log(new Date().toISOString())
-    console.log(parseISOString(new Date().toISOString()))
-
 
     let taskID = useParams().id;
 
