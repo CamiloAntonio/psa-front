@@ -2,7 +2,7 @@ const PORJECTS_API_URL = "https://modulo-proyectos.herokuapp.com/projects/";
 
 const TASKS_API_URL = "https://modulo-proyectos.herokuapp.com/tasks/";
 
-const RESOURCES_API_URL = "http://psa-resources-module.herokuapp.com/resource";
+const RESOURCES_API_URL = "https://psa-resources-module.herokuapp.com/resource";
 
 const TICKETS_API_URL = "https://psa-suport-module.herokuapp.com/tickets/";
 
