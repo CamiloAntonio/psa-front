@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import {Table, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem} from 'reactstrap'
+import {Table, FormGroup, Label, Input} from 'reactstrap'
 import HoursRow from './HoursRow';
+import ResourceService from "services/soporte/resource.service";
+import HoursService from "services/soporte/hour.service"
 
 export default function HoursView() {
     const [hours, setHours] = useState([]);
     const [resources, setResources] = useState({});
+    const [resourcesWanted, setResourcesWanted] = useState([1,2,3]);
+
+    const handleChange = e => {
+        const {name, value} = e.target;
+        if (value == 0) {
+            setResourcesWanted([1,2,3]);
+        } else {
+            setResourcesWanted([Number(value)]);
+        }
+    };
 
     function updateResources(data) {
         var allResources = {};
@@ -38,67 +50,46 @@ export default function HoursView() {
 
     // Cargar nombres de recursos
     useEffect(() => {
-        fetch("http://psa-resources-module.herokuapp.com/resource").then(
-            function(response) {
-                if (response.status !== 200) {
-                    console.log("Error obteniendo los recursos");
-                    return;
-                }
-
-                response.json().then(function(data) {
-                    updateResources(data);
-                })
-            }
-        )
-        .catch(function(err) {
-            console.log("Error de Fetch");
-        });
+        ResourceService.getResources(function(response) {
+            updateResources(response);
+        })
     }, []);
 
     // Cargar horas
     useEffect(() => {
-        fetch("http://psa-hours-module.herokuapp.com/hour").then(
-            function(response) {
-                if (response.status !== 200) {
-                    console.log("Error obteniendo las horas");
-                    return;
-                }
-
-                response.json().then(function(data) {
-                    updateHours(data);
-                })
-            }
-        )
-        .catch(function(err) {
-            console.log("Error de Fetch");
-        });
+        HoursService.getHours(function(response) {
+            updateHours(response);
+        })
     }, []);
 
     return (
         <div className="content">
             <h1>Horas Cargadas</h1>
-            <UncontrolledDropdown group>
-                <DropdownToggle caret color="secondary" data-toggle="dropdown">
-                    Text
-                </DropdownToggle>
-                <DropdownMenu>
-                    {Object.values(resources).map(name => {
-                        return <DropdownItem>{name}</DropdownItem>
-                    })}
-                </DropdownMenu>
-            </UncontrolledDropdown>
+            <FormGroup>
+                <Label>Recurso</Label>
+                <Input type="select" name="responsible" onChange={handleChange} id="resource">
+                    <option value={0}>Todos los recursos</option>
+                    {Object.keys(resources).map(resID => {
+                            return <option value={resID}>{resources[resID]}</option>
+                        })
+                    }
+                </Input>
+            </FormGroup>
             <Table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Responsable</th>
+                        <th>Tarea [ID]</th>
                         <th>Horas</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
                     {hours.map(data => {
-                    return <HoursRow key={data.id} id={data.id} responsibleName={resources[data.responsibleResourceID]} quantity={data.quantity} date={data.date}/>;
+                        if (resourcesWanted.includes(data.responsibleResourceID)) {
+                            return <HoursRow key={data.id} id={data.id} responsibleName={resources[data.responsibleResourceID]} quantity={data.quantity} date={data.date} taskId={data.taskId}/>;
+                        } 
                     })}
                 </tbody>
             </Table>

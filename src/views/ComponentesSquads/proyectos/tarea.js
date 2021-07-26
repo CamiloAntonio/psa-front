@@ -42,19 +42,35 @@ export default function CrearTarea({match}) {
   const [resources, setResources] = useState(sampleLeaders)
   const [projects, setProjects] = useState([])
   const [tickets, setTickets] = useState([])
-
-  const [fechas, setFechas] = useState({fecha_estimada_fin: new Date(), fecha_limite_inicio: new Date(), fecha_inicio: new Date()})
+  const [fechas, setFechas] = useState({fecha_inicio: new Date(), fecha_fin: undefined})
 
   useEffect(() => {
+    projectService.getTickets()
+    .then(res => res.json())
+    .then(
+      (result) => {
+        setTickets(result)
+        console.log(result)
+      },
+      (error) => {
+        console.log("hubo error")
+      }
+    )
     projectService.getTaskById(match.params.id)
       .then(res => res.json())
       .then(
         (result) => {
             setTaskDetails(result)
+            let newFechas = {...fechas}
+            newFechas.fecha_inicio = new Date(result.fecha_inicio)
+            if(result.fecha_fin.length>0) newFechas.fecha_fin = new Date(result.fecha_fin)
+
+            console.log("fechas trnasformadas", newFechas)
+            setFechas(newFechas)
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
     projectService.getResources()
@@ -65,7 +81,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
       projectService.getProjects()
@@ -76,7 +92,7 @@ export default function CrearTarea({match}) {
           console.log(result)
         },
         (error) => {
-          console.log("hubo error bro")
+          console.log("hubo error")
         }
       )
   }, [])
@@ -106,59 +122,51 @@ export default function CrearTarea({match}) {
 
   function handleSelectTicket(e) {
     console.log(e.target.value)
-
-    // let newTicket = {title: e.target.value, ticketNumber: e.target.id }
     let newTicket = tickets.filter(t => (t.ticketNumber == e.target.value))
     console.log(newTicket)
     let newTickets = [...taskDetails.tickets, ...newTicket]
 
     let newTaskDetails = {...taskDetails, tickets: newTickets}
     setTaskDetails(newTaskDetails)
-    
-    // let newTaskDetails = { ...taskDetails }
-    
-    // newTaskDetails.tickets = newTickets
-
-    // setTaskDetails(newTaskDetails)
-
-    // (newTaskDetails)
   }
 
+  function handleChangeFecha(e) {
+    let newFechas = {...fechas}
+    newFechas[e.name] = e.fecha
+    setFechas(newFechas)
+    let newTaskDetails = { ...taskDetails }
+    newTaskDetails[e.name] = e.fecha.toLocaleDateString()
+    setTaskDetails(newTaskDetails)
+  }
 
-  function submitCreateTask() {
+  function submitUpdateTask() {
     projectService.updateTask(taskDetails).then(res => res.json()).then(
       (result) => {
         console.log(result)
+        taskDetails.tickets.map(t => {
+          projectService.linkTaskAndTicket(t.ticketNumber, taskDetails.id).then(
+            (result1) => {
+              console.log("se linkeo la tarea", result ," al ticket", t.ticketNumber, ":", result1)
+            },
+            (error) => {
+              console.log("hubo error", error)
+            }
+          )
+        })
         window.location.replace("/admin/tareas");
       },
       (error) => {
-        console.log("hubo error bro")
+        console.log("hubo error", error)
       }
     )
   }
 
-//   function handleChangeFecha(e) {
-//     console.log(e)
-//     let newFechas = {...fechas}
-//     newFechas[e.name] = e.fecha
-//     setFechas(newFechas)
-//     let newProjectDetails = { ...projectDetails }
-//     newProjectDetails[e.name] = e.fecha.toLocaleDateString()
-//     setProjectDetails(newProjectDetails)
-//   }
-
-  //   this.setState(
-  //     {
-  //       horarios: horariosDisponibles
-  //     });
-
-  //   }
 
   return (
     <div className="content">
       <h1>{taskDetails.nombre}</h1>
       <Row>
-        <Col className="px-md-1" md="4">
+        <Col className="px-md-1" md="3">
           <FormGroup>
             <label>Nombre</label>
             <Input
@@ -171,23 +179,10 @@ export default function CrearTarea({match}) {
           </FormGroup>
         </Col>
 
-
-        {/*<Col className="pl-md-1" md="4">
-          <FormGroup>
-            <label>Personas asignadas</label>
-            <Input  type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsginada}>
-            {personas.map((persona) =>
-                <option value={persona.legajo} key={persona.legajo}>{persona.Nombre} {persona.Apellido}</option>
-                )}
-                </Input>
-                </FormGroup>
-            </Col> */}
-
-        <Col className="pl-md-1" md="4">
+        <Col className="pl-md-1" md="3">
           <FormGroup>
             <label>Proyecto al que pertenece</label>
-            <Input  type="select" name="selectProjects" id="project" required onChange={handleSelectProject}>
-                            <option>-</option>
+            <Input value={taskDetails.id_proyecto_asociado}  type="select" name="selectProjects" id="project" required onChange={handleSelectProject}>
                             {projects.map((project) =>
                                 <option value={project.id} key={project.id}>{project.nombre}</option>
 
@@ -195,29 +190,29 @@ export default function CrearTarea({match}) {
             </Input>
           </FormGroup>
         </Col>
-
-            <Col className="pl-md-1" md="4">
+        <Col className="pl-md-1" md="3">
              <FormGroup>
-               <label>Lider de Equipo</label>
-               <Input value={taskDetails.persona_asignada.id} type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsignada}>
-                               {resources.map((resource) =>
+               <label>Persona asignada</label>
+               <Input value={taskDetails.persona_asignada.resourceID} type="select" name="selectLeader" id="leader" required onChange={handleSelectPersonaAsignada}>
+                                {/* <option value={taskDetails.persona_asignada.resourceID} key={taskDetails.persona_asignada.resourceID}>{taskDetails.persona_asignada.name} {taskDetails.persona_asignada.surname}</option> */}
+                               
+                                {resources.map((resource) =>
                                    <option value={resource.resourceID} key={resource.resourceID}>{resource.name} {resource.surname}</option>
-                               )}
+                                )}
                </Input>
              </FormGroup>
-           </Col>
-      
+        </Col>
+        <Col className="px-md-1" md="3">
+            <FormGroup>
+              <label>Estado</label>
+              <Input value={taskDetails.estado} type="select" name="estado" id="estado" required onChange={handleEditTaskDetails}>
+                             <option key={1} value="Iniciado">Iniciado</option>
+                             <option key={2} value="No Iniciado">No Iniciado</option>
+                             <option key={3} value="Terminado">Terminado</option>
 
-        
-          
-          {/* <label>Fecha Inicio</label>
-          <DatePicker value={fechas.fecha_inicio} name="fecha_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_inicio"})}/>
-
-          <label>Fecha Limite Inicio</label>
-          <DatePicker value={fechas.fecha_limite_inicio} name="fecha_limite_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_limite_inicio"})}/>
-
-          <label>Fecha Estimada Fin</label>
-          <DatePicker value={fechas.fecha_estimada_fin} name="fecha_estimada_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_estimada_fin"})}/> */}
+              </Input>
+            </FormGroup>
+        </Col>
 
         </Row>
         <Row>
@@ -236,37 +231,35 @@ export default function CrearTarea({match}) {
         </Row>
 
         <Row>
-        <Col className="pl-md-1" md="4">
-          <FormGroup>
-            <label>Ticket al que pertenece</label>
-            <Input  type="select" name="selectProjects" id="project" required onChange={handleSelectTicket}>
-                            <option>-</option>
-                            {tickets.map((ticket) => 
-                                <option value={ticket.ticketNumber} id={ticket.ticketNumber} key={ticket.ticketNumber}>{ticket.title}</option>
-                            )}
-            </Input>
-          </FormGroup>
+            <Col className="pl-md-1" md="4">
+            <FormGroup>
+                <label>Ticket a los que pertenece</label>
+                <Input  type="select" name="selectProjects" id="project" required onChange={handleSelectTicket}>
+                                <option>-</option>
+                                {tickets.map((ticket) => 
+                                    <option value={ticket.ticketNumber} id={ticket.ticketNumber} key={ticket.ticketNumber}>{ticket.title}</option>
+                                )}
+                </Input>
+                {taskDetails.tickets.map(ticket => (<li key={ticket.ticketNumber}>{ticket.title}</li>)) }
+
+            </FormGroup>
+            </Col>
+            <Col className="pl-md-1" md="2">
+          <div>
+            <label>Fecha Inicio</label>
+          </div>
+          <DatePicker value={fechas.fecha_inicio} name="fecha_inicio" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_inicio"})}/>
+        </Col>
+                             
+        <Col className="pl-md-1" md="2">
+          <div>
+            <label>Fecha Fin</label>
+          </div>
+          <DatePicker value={fechas.fecha_fin} name="fecha_fin" onChange={ e => handleChangeFecha({fecha: e, name:"fecha_fin"})}/>
         </Col>
         </Row>
 
-      <Button className="pull-right" onClick={submitCreateTask}>Actualizar</Button>
+      <Button className="pull-right" onClick={submitUpdateTask}>Actualizar</Button>
     </div>
   )
 }
-
-// {
-//     "persona_asignada": {
-//       "resourceID": 0,
-//       "name": "string",
-//       "surname": "string"
-//     },
-//     "fecha_inicio": "string",
-//     "tickets": [
-//       {
-//         "ticketNumber": 0,
-//         "title": "string"
-//       }
-//     ],
-//     "estado": "No Iniciado",
-//     "fecha_fin": ""
-//   }

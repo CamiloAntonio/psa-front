@@ -26,18 +26,22 @@ export default function Proyectos() {
 
 
   function handleDeleteProject(e){
-    console.log("la key es esta", e.target.value)
-    projectService.deleteProjectById(e.target.value)
-    .then(res => res.json())
-    .then(
-      (result) => {
-        window.location.reload()
-        console.log(result)
-      },
-      (error) => {
-        console.log("hubo error bro")
-      }
-    )
+    if (window.confirm(
+      `¿Estás seguro que querés borrar este proyecto?` +
+      "\n¡Esta acción no se podrá deshacer!")) {
+
+        projectService.deleteProjectById(e.target.value)
+        .then(res => res.json())
+        .then(
+          (result) => {
+            window.location.reload()
+            console.log(result)
+          },
+          (error) => {
+            console.log("hubo error bro")
+          }
+        )
+    }
   }
 
 
@@ -80,7 +84,7 @@ export default function Proyectos() {
 
 
 
-              <Button onClick={handleDeleteProject} value={proyecto.id}> Borrar </Button>
+              <Button color="danger" onClick={handleDeleteProject} value={proyecto.id} size="sm"> Borrar </Button>
             </tr>
           </tbody>
         ))}

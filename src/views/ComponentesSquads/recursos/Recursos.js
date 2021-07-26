@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {Table} from 'reactstrap'
 import RecursosRow from './RecursosRow'
+import ResourceService from "services/soporte/resource.service";
 
 
 export default function Recursos() {
@@ -13,21 +14,9 @@ export default function Recursos() {
     }
 
     useEffect(() => {
-        fetch("http://psa-resources-module.herokuapp.com/resource").then(
-            function(response) {
-                if (response.status !== 200) {
-                    console.log("Error obteniendo los recursos");
-                    return;
-                }
-    
-                response.json().then(function(data) {
-                    updateResources(data);                    
-                })
-            }
-        )
-        .catch(function(err) {
-            console.log("Error de Fetch");
-        });
+        ResourceService.getResources(function(data) {
+            updateResources(data);
+        })
     }, []);
 
     return (
