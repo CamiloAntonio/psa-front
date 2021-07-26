@@ -36,7 +36,25 @@ export default function Tareas() {
             }
           )
       }, [])
+
+      function handleDeleteTask(e){
+        if (window.confirm(
+          `¿Estás seguro que querés borrar esta tarea?` +
+          "\n¡Esta acción no se podrá deshacer!")) {
     
+            projectService.deleteTaskById(e.target.value)
+            .then(res => res.json())
+            .then(
+              (result) => {
+                window.location.reload()
+                console.log(result)
+              },
+              (error) => {
+                console.log("hubo error bro")
+              }
+            )
+        }
+      }  
 
 
 
@@ -67,9 +85,11 @@ export default function Tareas() {
                     <tr>
                         <th>Nombre</th>
                         <th>Proyecto</th>
-                        <th>Descripcion</th>
                         <th>Persona Asignada</th>
                         <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Estado</th>
+
                     </tr>
                 </thead>
                 {tareas.map(tarea => (
@@ -86,14 +106,19 @@ export default function Tareas() {
                                 {proyectos.filter(p => p.id == tarea.id_proyecto_asociado)[0] && proyectos.filter(p => p.id == tarea.id_proyecto_asociado)[0].nombre}
                             </Link>
                               </td>}
-                            <td>{tarea.description}</td>
                             {tarea.persona_asignada ? <td>{tarea.persona_asignada.name} {tarea.persona_asignada.surname}</td> : <td>No asignada</td>}
                             <td>{tarea.fecha_inicio}</td>
+                            <td>{tarea.fecha_fin}</td>
+                            <td>{tarea.estado}</td>
+
                             <td className="text-right">
                                 <Link to={`hours/create/${tarea.id}`}>
                                   <Button color="info" size="sm">Cargas Horas</Button>
                                 </Link>
-                          </td>
+                            </td>
+                            <td>
+                              <Button color="danger" onClick={handleDeleteTask} value={tarea.id} size="sm"> Borrar </Button>
+                            </td>
                         </tr>
                     </tbody>
                 ))}

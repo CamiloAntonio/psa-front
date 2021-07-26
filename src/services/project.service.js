@@ -84,6 +84,11 @@ class UserService {
     return res
   }
 
+  deleteTaskById(id) {
+    let res = fetch(TASKS_API_URL + id, { method: 'DELETE'});
+    return res
+  }
+
 
   linkTaskAndTicket(ticketId, taskId){
     const requestOptions = {

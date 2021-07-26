@@ -29,13 +29,13 @@ const sampleTask = {
 }
 
  
-const sampleLeaders= [{"legajo":1,"Nombre":"Mario","Apellido":"Mendoza"},{"legajo":2,"Nombre":"Maria","Apellido":"Perez"},{"legajo":3,"Nombre":"Patricia","Apellido":"Gaona"}]
+const sampleLeaders= [{"resourceID":1,"name":"Mario","surname":"Mendoza"},{"legajo":2,"Nombre":"Maria","Apellido":"Perez"},{"legajo":3,"Nombre":"Patricia","Apellido":"Gaona"}]
 const samplePersonas= [{"legajo":1,"Nombre":"Franco","Apellido":"Mendoza"}, {"legajo":1,"Nombre":"Camilo","Apellido":"Antonio"} ,{"legajo":2,"Nombre":"Lucia","Apellido":"Perez"},{"legajo":3,"Nombre":"Agustina","Apellido":"Gaona"}]
 
 
 export default function CrearTarea({match}) {
   const [taskDetails, setTaskDetails] = useState(sampleTask)
-  const [resources, setResources] = useState(sampleLeaders)
+  const [resources, setResources] = useState([])
   const [projects, setProjects] = useState([])
   const [tickets, setTickets] = useState([])
   const [fechas, setFechas] = useState({fecha_inicio: new Date(), fecha_fin: undefined})
@@ -60,7 +60,7 @@ export default function CrearTarea({match}) {
           // console.log(result)
         },
         (error) => {
-          console.log("hubo error")
+          console.log("hubo error al fetchear resources", error)
         }
       )
     projectService.getResources()
@@ -68,7 +68,7 @@ export default function CrearTarea({match}) {
       .then(
         (result) => {
           setResources(result)
-          // console.log(result)
+          console.log("se setean los resources", result)
         },
         (error) => {
           console.log("hubo error")
